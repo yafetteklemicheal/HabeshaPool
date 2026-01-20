@@ -1,0 +1,470 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/game_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".GameActivity">
+
+    <!-- Header: Balls Still in Play -->
+    <TextView
+        android:id="@+id/text_balls_in_play_header"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Balls Still in Play"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:padding="6dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginTop="10dp" />
+
+    <!-- GridLayout for current balls (populated dynamically using images) -->
+    <GridLayout
+        android:id="@+id/current_balls_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:columnCount="7"
+        android:padding="6dp"
+        app:layout_constraintTop_toBottomOf="@id/text_balls_in_play_header"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginBottom="6dp" />
+
+    <!-- ScrollView Container for Player Sections -->
+    <ScrollView
+        android:id="@+id/scroll_player_sections"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintTop_toBottomOf="@id/current_balls_layout"
+        app:layout_constraintBottom_toTopOf="@id/button_new_game"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:padding="10dp">
+
+        <LinearLayout
+            android:id="@+id/linear_player_sections"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <!-- Player Section 1 -->
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/player_section_1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                android:background="#EFEFEF"
+                android:padding="5dp">
+
+                <!-- Horizontal chain for Name EditText and Edit/Done buttons -->
+                <EditText
+                    android:id="@+id/edit_player_name_1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Player 1 Name"
+                    android:imeOptions="actionDone"
+                    android:singleLine="true"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent" />
+
+                <TextView
+                    android:id="@+id/text_player_score_1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Score: 0"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:gravity="center"
+                    app:layout_constraintTop_toBottomOf="@id/edit_player_name_1"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    android:layout_marginTop="8dp" />
+
+                <Button
+                    android:id="@+id/btn_score_1"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="Score"
+                    app:layout_constraintTop_toBottomOf="@id/text_player_score_1"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toLeftOf="@id/btn_foul_1"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="8dp" />
+
+                <Button
+                    android:id="@+id/btn_foul_1"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="Foul"
+                    app:layout_constraintTop_toBottomOf="@id/text_player_score_1"
+                    app:layout_constraintLeft_toRightOf="@id/btn_score_1"
+                    app:layout_constraintRight_toLeftOf="@id/btn_scratch_1"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="8dp" />
+
+                <Button
+                    android:id="@+id/btn_scratch_1"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="Scratch"
+                    app:layout_constraintTop_toBottomOf="@id/text_player_score_1"
+                    app:layout_constraintLeft_toRightOf="@id/btn_foul_1"
+                    app:layout_constraintRight_toRightOf="@id/btn_undo_1"
+                    android:layout_marginTop="8dp" />
+
+                <Button
+                    android:id="@+id/btn_undo_1"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="Undo"
+                    app:layout_constraintTop_toBottomOf="@id/text_player_score_1"
+                    app:layout_constraintLeft_toRightOf="@id/btn_scratch_1"
+                    app:layout_constraintRight_toRightOf="parent"
+                    android:layout_marginTop="8dp" />
+
+                <TextView
+                    android:id="@+id/text_player_history_1"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="History: "
+                    app:layout_constraintTop_toBottomOf="@id/btn_score_1"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    android:layout_marginTop="8dp" />
+
+                <!-- New LinearLayout for displaying scored history as images -->
+                <LinearLayout
+                    android:id="@+id/linear_scored_history_1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    app:layout_constraintTop_toBottomOf="@id/btn_scratch_1"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    android:layout_marginTop="4dp"/>
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <!-- Player Section 2 -->
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/player_section_2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:background="#EFEFEF"
+                android:padding="6dp">
+
+                <EditText
+                    android:id="@+id/edit_player_name_2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Player 2 Name"
+                    android:imeOptions="actionDone"
+                    android:singleLine="true"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent" />
+
+                <TextView
+                    android:id="@+id/text_player_score_2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Score: 0"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:gravity="center"
+                    app:layout_constraintTop_toBottomOf="@id/edit_player_name_2"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    android:layout_marginTop="8dp" />
+
+                <Button
+                    android:id="@+id/btn_score_2"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="Score"
+                    app:layout_constraintTop_toBottomOf="@id/text_player_score_2"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toLeftOf="@id/btn_foul_2"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="8dp" />
+
+                <Button
+                    android:id="@+id/btn_foul_2"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="Foul"
+                    app:layout_constraintTop_toBottomOf="@id/text_player_score_2"
+                    app:layout_constraintLeft_toRightOf="@id/btn_score_2"
+                    app:layout_constraintRight_toLeftOf="@id/btn_scratch_2"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="8dp" />
+
+                <Button
+                    android:id="@+id/btn_scratch_2"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="Scratch"
+                    app:layout_constraintTop_toBottomOf="@id/text_player_score_2"
+                    app:layout_constraintLeft_toRightOf="@id/btn_foul_2"
+                    app:layout_constraintRight_toRightOf="@id/btn_undo_2"
+                    android:layout_marginTop="8dp" />
+
+                <Button
+                    android:id="@+id/btn_undo_2"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="Undo"
+                    app:layout_constraintTop_toBottomOf="@id/text_player_score_2"
+                    app:layout_constraintLeft_toRightOf="@id/btn_scratch_2"
+                    app:layout_constraintRight_toRightOf="parent"
+                    android:layout_marginTop="8dp" />
+
+                <TextView
+                    android:id="@+id/text_player_history_2"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="History: "
+                    app:layout_constraintTop_toBottomOf="@id/btn_score_2"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    android:layout_marginTop="8dp" />
+
+                <!-- Scored History Container for Player 2 -->
+                <LinearLayout
+                    android:id="@+id/linear_scored_history_2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    app:layout_constraintTop_toBottomOf="@id/btn_scratch_2"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    android:layout_marginTop="4dp"/>
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <!-- Player Section 3 -->
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/player_section_3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:background="#EFEFEF"
+                android:padding="6dp">
+
+                <EditText
+                    android:id="@+id/edit_player_name_3"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Player 3 Name"
+                    android:imeOptions="actionDone"
+                    android:singleLine="true"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent" />
+
+                <TextView
+                    android:id="@+id/text_player_score_3"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Score: 0"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:gravity="center"
+                    app:layout_constraintTop_toBottomOf="@id/edit_player_name_3"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    android:layout_marginTop="8dp" />
+
+                <Button
+                    android:id="@+id/btn_score_3"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="Score"
+                    app:layout_constraintTop_toBottomOf="@id/text_player_score_3"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toLeftOf="@id/btn_foul_3"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="8dp" />
+
+                <Button
+                    android:id="@+id/btn_foul_3"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="Foul"
+                    app:layout_constraintTop_toBottomOf="@id/text_player_score_3"
+                    app:layout_constraintLeft_toRightOf="@id/btn_score_3"
+                    app:layout_constraintRight_toLeftOf="@id/btn_scratch_3"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="8dp" />
+
+                <Button
+                    android:id="@+id/btn_scratch_3"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="Scratch"
+                    app:layout_constraintTop_toBottomOf="@id/text_player_score_3"
+                    app:layout_constraintLeft_toRightOf="@id/btn_foul_3"
+                    app:layout_constraintRight_toRightOf="@id/btn_undo_3"
+                    android:layout_marginTop="8dp" />
+
+                <Button
+                    android:id="@+id/btn_undo_3"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="Undo"
+                    app:layout_constraintTop_toBottomOf="@id/text_player_score_3"
+                    app:layout_constraintLeft_toRightOf="@id/btn_scratch_3"
+                    app:layout_constraintRight_toRightOf="parent"
+                    android:layout_marginTop="8dp" />
+
+                <TextView
+                    android:id="@+id/text_player_history_3"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="History: "
+                    app:layout_constraintTop_toBottomOf="@id/btn_score_3"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    android:layout_marginTop="8dp" />
+
+                <!-- Scored History Container for Player 3 -->
+                <LinearLayout
+                    android:id="@+id/linear_scored_history_3"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    app:layout_constraintTop_toBottomOf="@id/btn_scratch_3"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    android:layout_marginTop="4dp"/>
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <!-- Player Section 4 -->
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/player_section_4"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:background="#EFEFEF"
+                android:padding="6dp">
+
+                <EditText
+                    android:id="@+id/edit_player_name_4"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Player 4 Name"
+                    android:imeOptions="actionDone"
+                    android:singleLine="true"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent" />
+
+                <TextView
+                    android:id="@+id/text_player_score_4"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Score: 0"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:gravity="center"
+                    app:layout_constraintTop_toBottomOf="@id/edit_player_name_4"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    android:layout_marginTop="8dp" />
+
+                <Button
+                    android:id="@+id/btn_score_4"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="Score"
+                    app:layout_constraintTop_toBottomOf="@id/text_player_score_4"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toLeftOf="@id/btn_foul_4"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="8dp" />
+
+                <Button
+                    android:id="@+id/btn_foul_4"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="Foul"
+                    app:layout_constraintTop_toBottomOf="@id/text_player_score_4"
+                    app:layout_constraintLeft_toRightOf="@id/btn_score_4"
+                    app:layout_constraintRight_toLeftOf="@id/btn_scratch_4"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="8dp" />
+
+                <Button
+                    android:id="@+id/btn_scratch_4"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="Scratch"
+                    app:layout_constraintTop_toBottomOf="@id/text_player_score_4"
+                    app:layout_constraintLeft_toRightOf="@id/btn_foul_4"
+                    app:layout_constraintRight_toRightOf="@id/btn_undo_4"
+                    android:layout_marginTop="8dp" />
+
+                <Button
+                    android:id="@+id/btn_undo_4"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="Undo"
+                    app:layout_constraintTop_toBottomOf="@id/text_player_score_4"
+                    app:layout_constraintLeft_toRightOf="@id/btn_scratch_4"
+                    app:layout_constraintRight_toRightOf="parent"
+                    android:layout_marginTop="8dp" />
+
+                <TextView
+                    android:id="@+id/text_player_history_4"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintTop_toBottomOf="@id/btn_score_4"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    android:layout_marginTop="8dp" />
+
+                <!-- Scored History Container for Player 4 -->
+                <LinearLayout
+                    android:id="@+id/linear_scored_history_4"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    app:layout_constraintTop_toBottomOf="@id/btn_scratch_4"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    android:layout_marginTop="4dp"/>
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </LinearLayout>
+    </ScrollView>
+
+    <!-- New Game Button -->
+    <Button
+        android:id="@+id/button_new_game"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Start a New Game"
+        app:layout_constraintTop_toBottomOf="@id/scroll_player_sections"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/button_restart_game"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_margin="5dp"
+        android:layout_weight="1"/> <!-- Equal width -->
+
+    <Button
+        android:id="@+id/button_restart_game"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Restart Current Game"
+        app:layout_constraintTop_toBottomOf="@id/scroll_player_sections"
+        app:layout_constraintLeft_toRightOf="@id/button_new_game"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_margin="5dp"
+        android:layout_weight="1"/> <!-- Equal width -->
+
+</androidx.constraintlayout.widget.ConstraintLayout>
