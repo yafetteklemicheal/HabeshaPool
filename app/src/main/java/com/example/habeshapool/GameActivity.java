@@ -1,9 +1,15 @@
 package com.example.habeshapool;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.view.KeyEvent;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
+import android.view.animation.Animation;
+import android.view.animation.TranslateAnimation;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridLayout;
@@ -11,9 +17,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.view.KeyEvent;
-import android.view.inputmethod.EditorInfo;
-import android.view.MotionEvent;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -36,7 +39,6 @@ public class GameActivity extends AppCompatActivity {
         String name;
         int score;
         String history;
-        // List of scored ball numbers (only those scored)
         ArrayList<Integer> scoredBalls = new ArrayList<>();
 
         Player() {
@@ -67,43 +69,78 @@ public class GameActivity extends AppCompatActivity {
     private Button[] scratchButtons = new Button[4];
     private Button[] undoButtons = new Button[4];
     private View[] playerSections = new View[4];
-    private Button[] editNameButtons = new Button[4];
-    private Button[] doneNameButtons = new Button[4];
-    // New array for the scored history container (LinearLayout for images)
+    private TextView[] shooterLabels = new TextView[4];
+    private TextView[] rankEmojiTexts = new TextView[4];
     private LinearLayout[] scoredHistoryLayouts = new LinearLayout[4];
+    private TextView[] statusIndicatorTexts = new TextView[4]; // Lead / Out-of-contention indicators
+    private TextView ballsSumTextView;
 
     private Button newGameButton;
     private int numPlayers;
+
+    private ArrayList<Integer> lastRankingIndices = null;
+    private boolean gameJustFinished = false;
+
+    // Aggregate score display for 2-player games
+    private TextView aggregateScoreText;
+
+    // Early indicator tracking
+    private int leadSecuredIndex = -1;
+    private int outOfContentionIndex = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
+        ballsSumTextView = findViewById(R.id.text_balls_sum);
 
-        // Retrieve the number of players from the intent.
         numPlayers = getIntent().getIntExtra("numPlayers", 2);
 
-        // Initialize players.
         for (int i = 0; i < numPlayers; i++) {
             players.add(new Player());
         }
 
-        // Initialize current balls (from 3 to 15).
         for (int ball = 3; ball <= 15; ball++) {
             currentBalls.add(ball);
         }
 
-        // Set up the GridLayout for current balls.
         currentBallsLayout = findViewById(R.id.current_balls_layout);
         createCurrentBallButtons();
 
-        // Initialize player sections (4 total; hide extras).
+        ballsSumTextView = findViewById(R.id.text_balls_sum);
+        updateBallSumUI();
+
+        aggregateScoreText = findViewById(R.id.text_aggregate_score);
+        if (numPlayers == 2) {
+            aggregateScoreText.setVisibility(View.VISIBLE);
+        } else {
+            aggregateScoreText.setVisibility(View.GONE);
+        }
+
         for (int i = 0; i < 4; i++) {
             int sectionId = getResources().getIdentifier("player_section_" + (i + 1), "id", getPackageName());
             playerSections[i] = findViewById(sectionId);
+
+            int shooterLabelId = getResources().getIdentifier("text_shooter_label_" + (i + 1), "id", getPackageName());
+            shooterLabels[i] = findViewById(shooterLabelId);
+
+            int rankEmojiId = getResources().getIdentifier("text_rank_emoji_" + (i + 1), "id", getPackageName());
+            rankEmojiTexts[i] = findViewById(rankEmojiId);
+
+            int statusId = getResources().getIdentifier("text_status_" + (i + 1), "id", getPackageName());
+            statusIndicatorTexts[i] = findViewById(statusId);
+
             if (i >= numPlayers) {
-                playerSections[i].setVisibility(View.GONE);
+                if (playerSections[i] != null) {
+                    playerSections[i].setVisibility(View.GONE);
+                }
             } else {
+                if (shooterLabels[i] != null) shooterLabels[i].setVisibility(View.VISIBLE);
+                if (rankEmojiTexts[i] != null) rankEmojiTexts[i].setText("");
+                if (statusIndicatorTexts[i] != null) {
+                    statusIndicatorTexts[i].setVisibility(View.GONE);
+                }
+
                 int editId = getResources().getIdentifier("edit_player_name_" + (i + 1), "id", getPackageName());
                 int scoreTextId = getResources().getIdentifier("text_player_score_" + (i + 1), "id", getPackageName());
                 int historyTextId = getResources().getIdentifier("text_player_history_" + (i + 1), "id", getPackageName());
@@ -113,7 +150,6 @@ public class GameActivity extends AppCompatActivity {
                 int btnUndoId = getResources().getIdentifier("btn_undo_" + (i + 1), "id", getPackageName());
                 int linearScoredHistoryId = getResources().getIdentifier("linear_scored_history_" + (i + 1), "id", getPackageName());
 
-                // Get views.
                 playerNameEdits[i] = findViewById(editId);
                 playerScoreTexts[i] = findViewById(scoreTextId);
                 playerHistoryTexts[i] = findViewById(historyTextId);
@@ -121,184 +157,300 @@ public class GameActivity extends AppCompatActivity {
                 foulButtons[i] = findViewById(btnFoulId);
                 undoButtons[i] = findViewById(btnUndoId);
                 scratchButtons[i] = findViewById(btnScratchId);
-
                 scoredHistoryLayouts[i] = findViewById(linearScoredHistoryId);
 
-                // Enable name editing without extra buttons (remove any previous disabling).
-                playerNameEdits[i].setFocusable(true);
-                playerNameEdits[i].setFocusableInTouchMode(true);
+                if (playerNameEdits[i] != null) {
+                    playerNameEdits[i].setFocusable(true);
+                    playerNameEdits[i].setFocusableInTouchMode(true);
 
-                // Attach a listener so that when the user taps "Done" on the keyboard,
-                // the focus is cleared and the keyboard hides.
-                final EditText nameField = playerNameEdits[i]; // Ensure it's effectively final
-                nameField.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-                    @Override
-                    public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                        if (actionId == EditorInfo.IME_ACTION_DONE) {
-                            v.clearFocus();
-                            hideKeyboard(v);
-                            return true;
+                    final EditText nameField = playerNameEdits[i];
+                    nameField.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+                        @Override
+                        public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                            if (actionId == EditorInfo.IME_ACTION_DONE) {
+                                v.clearFocus();
+                                hideKeyboard(v);
+                                return true;
+                            }
+                            return false;
                         }
-                        return false;
-                    }
-                });
+                    });
+                }
 
-                // Set initial score and history.
-                playerScoreTexts[i].setText("Score: 0 (History: )");
-                playerHistoryTexts[i].setText("");
-                scoredHistoryLayouts[i].removeAllViews();
+                if (playerScoreTexts[i] != null) {
+                    playerScoreTexts[i].setText("Score: 0 (History: )");
+                }
+                if (playerHistoryTexts[i] != null) {
+                    playerHistoryTexts[i].setText("");
+                }
+                if (scoredHistoryLayouts[i] != null) {
+                    scoredHistoryLayouts[i].removeAllViews();
+                }
 
                 final int playerIndex = i;
-                // Score button listener:
-                scoreButtons[i].setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        pendingAction = ActionType.SCORE;
-                        currentPlayerIndex = playerIndex;
-                        Toast.makeText(GameActivity.this, "Tap a ball to score for Player " + (playerIndex + 1), Toast.LENGTH_SHORT).show();
-                    }
-                });
-                // Foul button listener:
-                foulButtons[i].setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        pendingAction = ActionType.FOUL;
-                        currentPlayerIndex = playerIndex;
-                        Toast.makeText(GameActivity.this, "Tap a ball to record a foul for Player " + (playerIndex + 1), Toast.LENGTH_SHORT).show();
-                    }
-                });
-                // Scratch button listener:
-                scratchButtons[i].setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        if (currentBalls.isEmpty()) {
-                            Toast.makeText(GameActivity.this, "No balls remaining.", Toast.LENGTH_SHORT).show();
-                            return;
-                        }
-                        int currentBall = currentBalls.get(0);  // smallest value ball
-                        int deduction = (currentBall == 3) ? 4 : currentBall;
-                        players.get(playerIndex).deductScore(deduction);
-                        updatePlayerUI(playerIndex);
-                        Toast.makeText(GameActivity.this, "Scratch recorded for Player " + (playerIndex + 1), Toast.LENGTH_SHORT).show();
-                        checkEndOfGame();
-                    }
-                });
 
-                undoButtons[i].setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Player currentPlayer = players.get(playerIndex);
-                        // Ensure there is something in the history to undo.
-                        // We assume each shot is recorded as " +6" or " -4" etc.
-                        if (currentPlayer.history != null && currentPlayer.history.trim().length() > 0
-                                && currentPlayer.history.contains(" ")) {
-                            // Find the index of the last shot entry by locating the last space.
-                            int lastSpaceIndex = currentPlayer.history.lastIndexOf(" ");
-                            // Get the last shot entry; e.g. " +6" or " +10" (could be 3 or 4 characters)
-                            String shotEntry = currentPlayer.history.substring(lastSpaceIndex);
-                            int shotValue;
-                            try {
-                                shotValue = Integer.parseInt(shotEntry.trim());
-                            } catch (NumberFormatException e) {
-                                // In case of unexpected formatting, show error and exit.
-                                Toast.makeText(GameActivity.this, "Error undoing shot!", Toast.LENGTH_SHORT).show();
+                if (scoreButtons[i] != null) {
+                    scoreButtons[i].setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            pendingAction = ActionType.SCORE;
+                            currentPlayerIndex = playerIndex;
+                            Toast.makeText(GameActivity.this, "Tap a ball to score for Player " + (playerIndex + 1), Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
+
+                if (foulButtons[i] != null) {
+                    foulButtons[i].setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            pendingAction = ActionType.FOUL;
+                            currentPlayerIndex = playerIndex;
+                            Toast.makeText(GameActivity.this, "Tap a ball to record a foul for Player " + (playerIndex + 1), Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
+
+                if (scratchButtons[i] != null) {
+                    scratchButtons[i].setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            if (currentBalls.isEmpty()) {
+                                Toast.makeText(GameActivity.this, "No balls remaining.", Toast.LENGTH_SHORT).show();
                                 return;
                             }
-
-                            // Adjust the player's score:
-                            // If shotValue was positive, subtract it; if negative, subtracting negative adds points.
-                            currentPlayer.score -= shotValue;
-
-                            // If the shot was a scoring shot (i.e. shotValue is positive), restore the ball.
-                            if (shotValue > 0 && currentPlayer.scoredBalls != null && !currentPlayer.scoredBalls.isEmpty()) {
-                                // Remove the last scored ball from the player's record.
-                                int ballToRestore = currentPlayer.scoredBalls.remove(currentPlayer.scoredBalls.size() - 1);
-                                // Return the ball back to the current balls (i.e., the table).
-                                currentBalls.add(ballToRestore);
-                                // Refresh the balls in play UI (assuming you have a method to recreate the ball buttons).
-                                createCurrentBallButtons();
-                            }
-
-                            // Remove the last shot record from the player's history.
-                            currentPlayer.history = currentPlayer.history.substring(0, lastSpaceIndex);
-
-                            // Update this player's UI (score, history display, and any ball images that appear in their section).
+                            int currentBall = currentBalls.get(0);
+                            int deduction = (currentBall == 3) ? 4 : currentBall;
+                            players.get(playerIndex).deductScore(deduction);
                             updatePlayerUI(playerIndex);
-                        } else {
-                            Toast.makeText(GameActivity.this, "Nothing to undo!", Toast.LENGTH_SHORT).show();
+                            updateRankEmojis();
+                            updateAggregateScore();
+                            updateEarlyIndicators();
+                            Toast.makeText(GameActivity.this, "Scratch recorded for Player " + (playerIndex + 1), Toast.LENGTH_SHORT).show();
+                            checkEndOfGame();
                         }
-                    }
-                });
+                    });
+                }
+
+                if (undoButtons[i] != null) {
+                    undoButtons[i].setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Player currentPlayer = players.get(playerIndex);
+                            if (currentPlayer.history != null && currentPlayer.history.trim().length() > 0
+                                    && currentPlayer.history.contains(" ")) {
+                                int lastSpaceIndex = currentPlayer.history.lastIndexOf(" ");
+                                String shotEntry = currentPlayer.history.substring(lastSpaceIndex);
+                                int shotValue;
+                                try {
+                                    shotValue = Integer.parseInt(shotEntry.trim());
+                                } catch (NumberFormatException e) {
+                                    Toast.makeText(GameActivity.this, "Error undoing shot!", Toast.LENGTH_SHORT).show();
+                                    return;
+                                }
+
+                                currentPlayer.score -= shotValue;
+
+                                if (shotValue > 0 && currentPlayer.scoredBalls != null && !currentPlayer.scoredBalls.isEmpty()) {
+                                    int ballToRestore = currentPlayer.scoredBalls.remove(currentPlayer.scoredBalls.size() - 1);
+                                    currentBalls.add(ballToRestore);
+                                    createCurrentBallButtons();
+                                }
+
+                                currentPlayer.history = currentPlayer.history.substring(0, lastSpaceIndex);
+                                updatePlayerUI(playerIndex);
+                                updateRankEmojis();
+                                updateAggregateScore();
+                                updateEarlyIndicators();
+                            } else {
+                                Toast.makeText(GameActivity.this, "Nothing to undo!", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
+                }
             }
         }
 
-        // Set up the "Start a New Game" button.
         newGameButton = findViewById(R.id.button_new_game);
-        newGameButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(GameActivity.this, PlayerSelectionActivity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(intent);
-                finish();
-            }
-        });
-
-        // Add a touch listener to the root view to clear focus (and hide keyboard) when tapping outside.
-        findViewById(R.id.game_root).setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
-                View currentFocus = getCurrentFocus();
-                if (currentFocus != null) {
-                    currentFocus.clearFocus();
-                    hideKeyboard(currentFocus);
+        if (newGameButton != null) {
+            newGameButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    showConfirmDialog(
+                            "Are you sure you want to start a new game? This will erase all progress.",
+                            new Runnable() {
+                                @Override
+                                public void run() {
+                                    Intent intent = new Intent(GameActivity.this, PlayerSelectionActivity.class);
+                                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                                    startActivity(intent);
+                                    finish();
+                                }
+                            }
+                    );
                 }
-                return false;
-            }
-        });
+            });
+        }
 
-        // Restart Current Game Button
+        View root = findViewById(R.id.game_root);
+        if (root != null) {
+            root.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View view, MotionEvent motionEvent) {
+                    View currentFocus = getCurrentFocus();
+                    if (currentFocus != null) {
+                        currentFocus.clearFocus();
+                        hideKeyboard(currentFocus);
+                    }
+                    return false;
+                }
+            });
+        }
+
         Button restartGameButton = findViewById(R.id.button_restart_game);
-        restartGameButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Reset all player scores to zero
-                for (Player player : players) {
-                    player.score = 0;
-                    player.history = "History: "; // Clear full history
-                    player.scoredBalls.clear(); // Clear scored balls history
+        if (restartGameButton != null) {
+            restartGameButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    showConfirmDialog(
+                            "Are you sure you want to restart the current game? This will reset scores and history.",
+                            new Runnable() {
+                                @Override
+                                public void run() {
+                                    handleRestartCurrentGame();
+                                }
+                            }
+                    );
                 }
+            });
+        }
 
-                // Reset balls in play (3 to 15)
-                currentBalls.clear();
-                for (int i = 3; i <= 15; i++) {
-                    currentBalls.add(i);
-                }
-
-                // Refresh UI to reflect reset game state
-                for (int i = 0; i < numPlayers; i++) {
-                    updatePlayerUI(i);
-                }
-                createCurrentBallButtons(); // Recreate ball buttons in the GridLayout
-
-                Toast.makeText(GameActivity.this, "Game restarted! Scores reset.", Toast.LENGTH_SHORT).show();
-            }
-        });
+        updateRankEmojis();
+        updateAggregateScore();
+        updateEarlyIndicators();
     }
 
-    // Create ball buttons dynamically using images in the GridLayout.
+    private int getCurrentBallSum() {
+        int sum = 0;
+        for (int b : currentBalls) {
+            sum += (b == 3 ? 6 : b);
+        }
+        return sum;
+    }
+
+    private void updateBallSumUI() {
+        if (ballsSumTextView != null) {
+            ballsSumTextView.setText("" + getCurrentBallSum());
+        }
+    }
+
+    private void handleRestartCurrentGame() {
+        if (gameJustFinished && lastRankingIndices != null && lastRankingIndices.size() == numPlayers) {
+            boolean anyNamed = false;
+            for (int i = 0; i < numPlayers; i++) {
+                String name = playerNameEdits[i].getText().toString().trim();
+                if (!name.isEmpty()) {
+                    anyNamed = true;
+                    break;
+                }
+            }
+
+            if (anyNamed) {
+                reorderShootersByLastRanking();
+            }
+        }
+
+        gameJustFinished = false;
+
+        for (Player player : players) {
+            player.score = 0;
+            player.history = "History:";
+            player.scoredBalls.clear();
+        }
+
+        currentBalls.clear();
+        for (int i = 3; i <= 15; i++) {
+            currentBalls.add(i);
+        }
+
+        for (int i = 0; i < numPlayers; i++) {
+            updatePlayerUI(i);
+        }
+        createCurrentBallButtons();
+        updateBallSumUI();
+
+        clearAllNameFocusAndHideKeyboard();
+
+        updateRankEmojis();
+        updateAggregateScore();
+        clearEarlyIndicators();
+
+        Toast.makeText(GameActivity.this, "Game restarted! Scores reset.", Toast.LENGTH_SHORT).show();
+    }
+
+    private void reorderShootersByLastRanking() {
+        if (lastRankingIndices == null || lastRankingIndices.size() != numPlayers) {
+            return;
+        }
+
+        String[] originalNames = new String[numPlayers];
+        for (int i = 0; i < numPlayers; i++) {
+            originalNames[i] = playerNameEdits[i].getText().toString().trim();
+        }
+
+        String[] newNamesByPosition = new String[numPlayers];
+
+        for (int position = 0; position < numPlayers; position++) {
+            int originalIndex = lastRankingIndices.get(position);
+            String name = originalNames[originalIndex];
+            newNamesByPosition[position] = name;
+        }
+
+        for (int i = 0; i < numPlayers; i++) {
+            playerNameEdits[i].setText(newNamesByPosition[i]);
+        }
+
+        clearAllNameFocusAndHideKeyboard();
+    }
+
+    private void showConfirmDialog(String message, final Runnable onConfirm) {
+        new AlertDialog.Builder(this)
+                .setMessage(message)
+                // LEFT button (negative) → shows "Yes"
+                .setNegativeButton("Yes", (dialog, which) -> {
+                    if (onConfirm != null) {
+                        onConfirm.run();
+                    }
+                })
+                // RIGHT button (positive) → shows "No"
+                .setPositiveButton("No", null)
+                .show();
+    }
+
+    private void clearAllNameFocusAndHideKeyboard() {
+        View anyView = null;
+        for (int i = 0; i < numPlayers; i++) {
+            if (playerNameEdits[i] != null) {
+                playerNameEdits[i].clearFocus();
+                anyView = playerNameEdits[i];
+            }
+        }
+        if (anyView != null) {
+            hideKeyboard(anyView);
+        }
+    }
+
     private void createCurrentBallButtons() {
         Collections.sort(currentBalls);
         currentBallsLayout.removeAllViews();
         for (final int ball : currentBalls) {
             Button b = new Button(this);
-            // Set the background image for the ball button.
             b.setBackgroundResource(getImageForBall(ball));
             b.setTag(ball);
-            b.setText(""); // Remove any text.
+            b.setText("");
             GridLayout.LayoutParams params = new GridLayout.LayoutParams();
-            params.width = dpToPx(45);  // Change to your preferred size
-            params.height = dpToPx(45); // Change to your preferred size
+            params.width = dpToPx(45);
+            params.height = dpToPx(45);
             params.setMargins(dpToPx(3), dpToPx(5), dpToPx(5), dpToPx(3));
             b.setLayoutParams(params);
             b.setOnClickListener(new View.OnClickListener() {
@@ -312,17 +464,22 @@ public class GameActivity extends AppCompatActivity {
                     if (pendingAction == ActionType.SCORE) {
                         int pointValue = (tappedBall == 3) ? 6 : tappedBall;
                         players.get(currentPlayerIndex).addScore(pointValue);
-                        // Also add this ball to the scored history.
                         players.get(currentPlayerIndex).scoredBalls.add(tappedBall);
                         updatePlayerUI(currentPlayerIndex);
                         removeBallButton(v);
+                        updateRankEmojis();
+                        updateAggregateScore();
+                        updateEarlyIndicators();
                         Toast.makeText(GameActivity.this, "Player " + (currentPlayerIndex + 1) + " scored " + pointValue, Toast.LENGTH_SHORT).show();
                         checkEndOfGame();
                     } else if (pendingAction == ActionType.FOUL) {
-                        int currentBall = currentBalls.get(0);  // smallest ball count as current
+                        int currentBall = currentBalls.get(0);
                         int deduction = (currentBall == 3) ? 4 : tappedBall;
                         players.get(currentPlayerIndex).deductScore(deduction);
                         updatePlayerUI(currentPlayerIndex);
+                        updateRankEmojis();
+                        updateAggregateScore();
+                        updateEarlyIndicators();
                         Toast.makeText(GameActivity.this, "Foul recorded for Player " + (currentPlayerIndex + 1) + " (-" + deduction + ")", Toast.LENGTH_SHORT).show();
                     }
                     pendingAction = ActionType.NONE;
@@ -331,51 +488,41 @@ public class GameActivity extends AppCompatActivity {
             });
             currentBallsLayout.addView(b);
         }
+        updateBallSumUI();
     }
 
-    // Helper method: Remove the tapped ball button and update the ball state.
     private void removeBallButton(View ballButton) {
         int ballNumber = (int) ballButton.getTag();
         currentBalls.remove(Integer.valueOf(ballNumber));
         currentBallsLayout.removeView(ballButton);
+        updateBallSumUI();
     }
 
-    // Update player's complete history, score, and the scored-history display.
     private void updatePlayerUI(int playerIndex) {
-        // Format score with history
         String scoreText = "Score: " + players.get(playerIndex).score;
         String historyText = players.get(playerIndex).history.isEmpty() ? "" : " (" + players.get(playerIndex).history + ")";
-
-        // Update the combined score and history in a single TextView
         playerScoreTexts[playerIndex].setText(scoreText + historyText);
-
-        // Update scored ball display (image-based history)
         updatePlayerScoredHistoryUI(playerIndex);
     }
 
-    // Update the scored history LinearLayout by adding ImageViews for each scored ball.
     private void updatePlayerScoredHistoryUI(int playerIndex) {
         LinearLayout layout = scoredHistoryLayouts[playerIndex];
         layout.removeAllViews();
         for (int ballNumber : players.get(playerIndex).scoredBalls) {
             ImageView iv = new ImageView(this);
             iv.setImageResource(getImageForBall(ballNumber));
-
-            // Set size for ball images
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(dpToPx(30), dpToPx(30));
-            params.setMargins(dpToPx(4), dpToPx(4), dpToPx(4), dpToPx(4)); // Adjust spacing
+            params.setMargins(dpToPx(4), dpToPx(4), dpToPx(4), dpToPx(4));
             iv.setLayoutParams(params);
             layout.addView(iv);
         }
     }
 
-    // Helper method: Convert dp to pixels.
     private int dpToPx(int dp) {
         float density = getResources().getDisplayMetrics().density;
         return Math.round((float) dp * density);
     }
 
-    // Helper method: Return drawable resource id for a given ball number.
     private int getImageForBall(int ballNumber) {
         switch (ballNumber) {
             case 3:  return R.drawable.pool_ball_3;
@@ -395,22 +542,27 @@ public class GameActivity extends AppCompatActivity {
         }
     }
 
-    // Check if the game is over (all balls are pocketed) and display the winner.
     private void checkEndOfGame() {
         if (currentBalls.isEmpty()) {
-            // Sort players by score (highest first)
+            clearEarlyIndicators();
+
             ArrayList<Player> sortedPlayers = new ArrayList<>(players);
             sortedPlayers.sort((p1, p2) -> Integer.compare(p2.score, p1.score));
 
-            // Get the top player's name.
+            lastRankingIndices = new ArrayList<>();
+            for (Player p : sortedPlayers) {
+                int originalIndex = players.indexOf(p);
+                lastRankingIndices.add(originalIndex);
+            }
+            gameJustFinished = true;
+
             Player first = sortedPlayers.get(0);
-            int firstIndex = players.indexOf(first); // Find original index
+            int firstIndex = players.indexOf(first);
             String firstName = playerNameEdits[firstIndex].getText().toString().trim();
             if (firstName.isEmpty()) {
                 firstName = "Player " + (firstIndex + 1);
             }
 
-            // If two players have equal top score, declare a tie.
             String titleMessage;
             if (sortedPlayers.size() > 1 && first.score == sortedPlayers.get(1).score) {
                 titleMessage = "No winner, its a tie!\n\n";
@@ -418,7 +570,6 @@ public class GameActivity extends AppCompatActivity {
                 titleMessage = "Winner: " + firstName + "\n\n";
             }
 
-            // Build the game over message with rankings.
             StringBuilder resultMessage = new StringBuilder(titleMessage);
             for (int i = 0; i < sortedPlayers.size(); i++) {
                 Player currentPlayer = sortedPlayers.get(i);
@@ -435,7 +586,6 @@ public class GameActivity extends AppCompatActivity {
                         .append("\n");
             }
 
-            // Show the game-over popup with accurate rankings & names.
             new AlertDialog.Builder(this)
                     .setTitle("Game Over")
                     .setMessage(resultMessage.toString())
@@ -444,11 +594,261 @@ public class GameActivity extends AppCompatActivity {
         }
     }
 
-    // Hide the soft keyboard.
     private void hideKeyboard(View view) {
         InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
         if (imm != null) {
             imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
+    }
+
+    // --- NEW: Aggregate score for 2-player games ---
+    private void updateAggregateScore() {
+        if (numPlayers != 2 || aggregateScoreText == null) {
+            return;
+        }
+
+        int score1 = players.get(0).score;
+        int score2 = players.get(1).score;
+
+        if (score1 == score2) {
+            aggregateScoreText.setText("Score tied\nAggregate score: 0");
+            return;
+        }
+
+        int diff = Math.abs(score1 - score2);
+        int leaderIndex = (score1 > score2) ? 0 : 1;
+
+        String name1 = playerNameEdits[0].getText().toString().trim();
+        String name2 = playerNameEdits[1].getText().toString().trim();
+
+        if (name1.isEmpty()) name1 = "Player 1";
+        if (name2.isEmpty()) name2 = "Player 2";
+
+        String leaderName = (leaderIndex == 0) ? name1 : name2;
+
+        String text = leaderName + " in the lead\nAggregate score: " + diff;
+        aggregateScoreText.setText(text);
+    }
+
+    // --- NEW: Rank emojis based on current scores ---
+    private void updateRankEmojis() {
+        // Clear all first
+        for (int i = 0; i < numPlayers; i++) {
+            if (rankEmojiTexts[i] != null) {
+                rankEmojiTexts[i].setText("");
+            }
+        }
+
+        if (numPlayers < 2) return;
+
+        int[] scores = new int[numPlayers];
+        for (int i = 0; i < numPlayers; i++) {
+            scores[i] = players.get(i).score;
+        }
+
+        // Check full tie → no emojis
+        boolean allEqual = true;
+        for (int i = 1; i < numPlayers; i++) {
+            if (scores[i] != scores[0]) {
+                allEqual = false;
+                break;
+            }
+        }
+        if (allEqual) return;
+
+        // Build list of indices sorted by score desc (stable)
+        ArrayList<Integer> indices = new ArrayList<>();
+        for (int i = 0; i < numPlayers; i++) indices.add(i);
+        indices.sort((a, b) -> Integer.compare(scores[b], scores[a]));
+
+        // Determine rank groups (1-based rank) with rank skipping on ties
+        int[] rankByIndex = new int[numPlayers];
+        int currentRank = 1;
+        rankByIndex[indices.get(0)] = currentRank;
+
+        for (int i = 1; i < indices.size(); i++) {
+            int prevIdx = indices.get(i - 1);
+            int curIdx = indices.get(i);
+
+            if (scores[curIdx] == scores[prevIdx]) {
+                // Same score → same rank
+                rankByIndex[curIdx] = currentRank;
+            } else {
+                // Count how many players shared the previous score
+                int tieCount = 0;
+                for (int j = i - 1; j >= 0; j--) {
+                    if (scores[indices.get(j)] == scores[prevIdx]) {
+                        tieCount++;
+                    } else {
+                        break;
+                    }
+                }
+                // Skip ranks equal to number of players in that previous tied group
+                currentRank += tieCount;
+                rankByIndex[curIdx] = currentRank;
+            }
+        }
+
+        // Assign emojis based on final rank numbers
+        for (int i = 0; i < numPlayers; i++) {
+            int r = rankByIndex[i];
+            String emoji;
+
+            if (r == 1) emoji = "🥇";
+            else if (r == 2) emoji = "🥈";
+            else if (r == 3) emoji = "🥉";
+            else emoji = "🗑";
+
+            rankEmojiTexts[i].setText(emoji);
+        }
+    }
+
+    // --- NEW: Early winner / loser indicators ---
+
+    private void updateEarlyIndicators() {
+        // Only active when 3 balls or less remain
+        if (currentBalls.size() > 3 || numPlayers < 2) {
+            clearEarlyIndicators();
+            return;
+        }
+
+        int remainingSum = getCurrentBallSum();
+
+        // Build scores and sorted indices (desc)
+        int[] scores = new int[numPlayers];
+        for (int i = 0; i < numPlayers; i++) {
+            scores[i] = players.get(i).score;
+        }
+
+        ArrayList<Integer> indices = new ArrayList<>();
+        for (int i = 0; i < numPlayers; i++) indices.add(i);
+        indices.sort((a, b) -> Integer.compare(scores[b], scores[a]));
+
+        // LEAD SECURED
+        int newLeadIndex = -1;
+        if (numPlayers >= 2) {
+            int leaderIdx = indices.get(0);
+            int secondIdx = indices.get(1);
+            int leaderScore = scores[leaderIdx];
+            int secondScore = scores[secondIdx];
+
+            // Must be a sole leader
+            if (leaderScore != secondScore) {
+                int leaderMinusRemaining = leaderScore - remainingSum;
+                if (leaderMinusRemaining > secondScore) {
+                    newLeadIndex = leaderIdx;
+                }
+            }
+        }
+
+        // OUT OF CONTENTION
+        int newOutIndex = -1;
+        if (numPlayers >= 2) {
+            int lastIdx = indices.get(numPlayers - 1);
+            int secondLastIdx = indices.get(numPlayers - 2);
+            int lastScore = scores[lastIdx];
+            int secondLastScore = scores[secondLastIdx];
+
+            // Must be a sole last place
+            if (lastScore != secondLastScore) {
+                int lastPlusRemaining = lastScore + remainingSum;
+                if (lastPlusRemaining < secondLastScore) {
+                    newOutIndex = lastIdx;
+                }
+            }
+        }
+
+        // Apply changes with animations
+
+        // Lead secured
+        if (leadSecuredIndex != -1 && leadSecuredIndex != newLeadIndex) {
+            hideStatusIndicator(leadSecuredIndex);
+            leadSecuredIndex = -1;
+        }
+        if (newLeadIndex != -1) {
+            leadSecuredIndex = newLeadIndex;
+            showStatusIndicator(newLeadIndex, true);
+        }
+
+        // Out of contention
+        if (outOfContentionIndex != -1 && outOfContentionIndex != newOutIndex) {
+            hideStatusIndicator(outOfContentionIndex);
+            outOfContentionIndex = -1;
+        }
+        if (newOutIndex != -1) {
+            outOfContentionIndex = newOutIndex;
+            showStatusIndicator(newOutIndex, false);
+        }
+    }
+
+    private void clearEarlyIndicators() {
+        if (leadSecuredIndex != -1) {
+            hideStatusIndicator(leadSecuredIndex);
+            leadSecuredIndex = -1;
+        }
+        if (outOfContentionIndex != -1) {
+            hideStatusIndicator(outOfContentionIndex);
+            outOfContentionIndex = -1;
+        }
+    }
+
+    private void showStatusIndicator(int playerIndex, boolean isLead) {
+        if (playerIndex < 0 || playerIndex >= statusIndicatorTexts.length) return;
+        TextView tv = statusIndicatorTexts[playerIndex];
+        if (tv == null) return;
+
+        tv.setTextColor(Color.BLACK);
+        if (isLead) {
+            tv.setText("Lead Secured 🏆");
+            tv.setBackgroundColor(Color.parseColor("#4CAF50")); // green-ish
+        } else {
+            tv.setText("Out of contention ❌");
+            tv.setBackgroundColor(Color.parseColor("#F44336")); // red-ish
+        }
+
+        if (tv.getVisibility() != View.VISIBLE) {
+            tv.setVisibility(View.VISIBLE);
+            tv.startAnimation(createSlideInAnimation());
+        }
+    }
+
+    private void hideStatusIndicator(final int playerIndex) {
+        if (playerIndex < 0 || playerIndex >= statusIndicatorTexts.length) return;
+        final TextView tv = statusIndicatorTexts[playerIndex];
+        if (tv == null) return;
+        if (tv.getVisibility() != View.VISIBLE) return;
+
+        Animation slideOut = createSlideOutAnimation();
+        slideOut.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) { }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                tv.setVisibility(View.GONE);
+                tv.setText("");
+                tv.setBackgroundColor(Color.TRANSPARENT);
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) { }
+        });
+        tv.startAnimation(slideOut);
+    }
+
+    private Animation createSlideInAnimation() {
+        int distance = dpToPx(80);
+        TranslateAnimation anim = new TranslateAnimation(-distance, 0, 0, 0);
+        anim.setDuration(200);
+        anim.setFillAfter(true);
+        return anim;
+    }
+
+    private Animation createSlideOutAnimation() {
+        int distance = dpToPx(80);
+        TranslateAnimation anim = new TranslateAnimation(0, -distance, 0, 0);
+        anim.setDuration(200);
+        anim.setFillAfter(true);
+        return anim;
     }
 }

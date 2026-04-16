@@ -9,18 +9,30 @@
     tools:context=".GameActivity">
 
     <!-- Header: Balls Still in Play -->
+
     <TextView
         android:id="@+id/text_balls_in_play_header"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Balls Still in Play"
+        android:layout_marginTop="8dp"
+        android:padding="6dp"
+        android:text="Balls Still in Play | Sum:"
         android:textSize="18sp"
         android:textStyle="bold"
-        android:padding="6dp"
-        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        android:layout_marginTop="10dp" />
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/text_balls_sum"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="120"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintTop_toTopOf="@id/text_balls_in_play_header"
+        app:layout_constraintBottom_toBottomOf="@id/text_balls_in_play_header"
+        app:layout_constraintLeft_toRightOf="@id/text_balls_in_play_header"/>
 
     <!-- GridLayout for current balls (populated dynamically using images) -->
     <GridLayout
@@ -60,16 +72,59 @@
                 android:background="#EFEFEF"
                 android:padding="5dp">
 
-                <!-- Horizontal chain for Name EditText and Edit/Done buttons -->
+                <!-- Player 1 Name -->
                 <EditText
                     android:id="@+id/edit_player_name_1"
-                    android:layout_width="match_parent"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:hint="Player 1 Name"
                     android:imeOptions="actionDone"
                     android:singleLine="true"
+                    android:maxLength="15"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toLeftOf="@id/text_status_1"
+                    android:layout_marginEnd="8dp" />
+
+                <!-- Lead / Out-of-contention indicator 1 -->
+                <TextView
+                    android:id="@+id/text_status_1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="4dp"
+                    android:paddingRight="4dp"
+                    android:paddingTop="2dp"
+                    android:paddingBottom="2dp"
+                    android:textColor="#000000"
+                    android:visibility="gone"
+                    app:layout_constraintTop_toTopOf="@id/edit_player_name_1"
+                    app:layout_constraintBottom_toBottomOf="@id/edit_player_name_1"
+                    app:layout_constraintLeft_toRightOf="@id/edit_player_name_1"
+                    app:layout_constraintRight_toLeftOf="@id/text_rank_emoji_1"
+                    android:layout_marginEnd="4dp" />
+
+                <!-- Rank Emoji 1 -->
+                <TextView
+                    android:id="@+id/text_rank_emoji_1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text=""
+                    android:textSize="18sp"
+                    app:layout_constraintTop_toTopOf="@id/edit_player_name_1"
+                    app:layout_constraintBottom_toBottomOf="@id/edit_player_name_1"
+                    app:layout_constraintRight_toLeftOf="@id/text_shooter_label_1"
+                    android:layout_marginEnd="4dp" />
+
+                <!-- Shooter Label A (right aligned) -->
+                <TextView
+                    android:id="@+id/text_shooter_label_1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="A"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    app:layout_constraintTop_toTopOf="@id/edit_player_name_1"
+                    app:layout_constraintBottom_toBottomOf="@id/edit_player_name_1"
                     app:layout_constraintRight_toRightOf="parent" />
 
                 <TextView
@@ -82,50 +137,51 @@
                     android:gravity="center"
                     app:layout_constraintTop_toBottomOf="@id/edit_player_name_1"
                     app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintRight_toRightOf="parent"
-                    android:layout_marginTop="8dp" />
+                    app:layout_constraintRight_toRightOf="parent" />
 
                 <Button
                     android:id="@+id/btn_score_1"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
                     android:text="Score"
-                    app:layout_constraintTop_toBottomOf="@id/text_player_score_1"
+                    app:flow_horizontalAlign="center"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintRight_toLeftOf="@id/btn_foul_1"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginEnd="8dp" />
+                    app:layout_constraintTop_toBottomOf="@id/text_player_score_1" />
 
                 <Button
                     android:id="@+id/btn_foul_1"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
                     android:text="Foul"
-                    app:layout_constraintTop_toBottomOf="@id/text_player_score_1"
+                    app:flow_horizontalAlign="center"
                     app:layout_constraintLeft_toRightOf="@id/btn_score_1"
                     app:layout_constraintRight_toLeftOf="@id/btn_scratch_1"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginEnd="8dp" />
+                    app:layout_constraintTop_toBottomOf="@id/text_player_score_1" />
 
                 <Button
                     android:id="@+id/btn_scratch_1"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
                     android:text="Scratch"
-                    app:layout_constraintTop_toBottomOf="@id/text_player_score_1"
+                    app:flow_horizontalAlign="center"
                     app:layout_constraintLeft_toRightOf="@id/btn_foul_1"
                     app:layout_constraintRight_toRightOf="@id/btn_undo_1"
-                    android:layout_marginTop="8dp" />
+                    app:layout_constraintTop_toBottomOf="@id/text_player_score_1" />
 
                 <Button
                     android:id="@+id/btn_undo_1"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
                     android:text="Undo"
-                    app:layout_constraintTop_toBottomOf="@id/text_player_score_1"
+                    app:flow_horizontalAlign="center"
                     app:layout_constraintLeft_toRightOf="@id/btn_scratch_1"
                     app:layout_constraintRight_toRightOf="parent"
-                    android:layout_marginTop="8dp" />
+                    app:layout_constraintTop_toBottomOf="@id/text_player_score_1" />
 
                 <TextView
                     android:id="@+id/text_player_history_1"
@@ -137,16 +193,24 @@
                     app:layout_constraintRight_toRightOf="parent"
                     android:layout_marginTop="8dp" />
 
-                <!-- New LinearLayout for displaying scored history as images -->
-                <LinearLayout
-                    android:id="@+id/linear_scored_history_1"
-                    android:layout_width="match_parent"
+                <!-- Scored history images wrapped in a horizontal scroll -->
+                <HorizontalScrollView
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
+                    android:scrollbars="none"
+                    android:fillViewport="false"
+                    android:overScrollMode="never"
                     app:layout_constraintTop_toBottomOf="@id/btn_scratch_1"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintRight_toRightOf="parent"
-                    android:layout_marginTop="4dp"/>
+                    android:layout_marginTop="4dp">
+
+                    <LinearLayout
+                        android:id="@+id/linear_scored_history_1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal" />
+                </HorizontalScrollView>
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <!-- Player Section 2 -->
@@ -160,69 +224,113 @@
 
                 <EditText
                     android:id="@+id/edit_player_name_2"
-                    android:layout_width="match_parent"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:hint="Player 2 Name"
                     android:imeOptions="actionDone"
                     android:singleLine="true"
+                    android:maxLength="15"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toLeftOf="@id/text_status_2"
+                    android:layout_marginEnd="8dp" />
+
+                <!-- Lead / Out-of-contention indicator 2 -->
+                <TextView
+                    android:id="@+id/text_status_2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="4dp"
+                    android:paddingRight="4dp"
+                    android:paddingTop="2dp"
+                    android:paddingBottom="2dp"
+                    android:textColor="#000000"
+                    android:visibility="gone"
+                    app:layout_constraintTop_toTopOf="@id/edit_player_name_2"
+                    app:layout_constraintBottom_toBottomOf="@id/edit_player_name_2"
+                    app:layout_constraintLeft_toRightOf="@id/edit_player_name_2"
+                    app:layout_constraintRight_toLeftOf="@id/text_rank_emoji_2"
+                    android:layout_marginEnd="4dp" />
+
+                <!-- Rank Emoji 2 -->
+                <TextView
+                    android:id="@+id/text_rank_emoji_2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text=""
+                    android:textSize="18sp"
+                    app:layout_constraintTop_toTopOf="@id/edit_player_name_2"
+                    app:layout_constraintBottom_toBottomOf="@id/edit_player_name_2"
+                    app:layout_constraintRight_toLeftOf="@id/text_shooter_label_2"
+                    android:layout_marginEnd="4dp" />
+
+                <!-- Shooter Label B -->
+                <TextView
+                    android:id="@+id/text_shooter_label_2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="B"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    app:layout_constraintTop_toTopOf="@id/edit_player_name_2"
+                    app:layout_constraintBottom_toBottomOf="@id/edit_player_name_2"
                     app:layout_constraintRight_toRightOf="parent" />
 
                 <TextView
                     android:id="@+id/text_player_score_2"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:gravity="center"
                     android:text="Score: 0"
                     android:textSize="16sp"
                     android:textStyle="bold"
-                    android:gravity="center"
-                    app:layout_constraintTop_toBottomOf="@id/edit_player_name_2"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintRight_toRightOf="parent"
-                    android:layout_marginTop="8dp" />
+                    app:layout_constraintTop_toBottomOf="@id/edit_player_name_2" />
 
                 <Button
                     android:id="@+id/btn_score_2"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
                     android:text="Score"
-                    app:layout_constraintTop_toBottomOf="@id/text_player_score_2"
+                    app:flow_horizontalAlign="center"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintRight_toLeftOf="@id/btn_foul_2"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginEnd="8dp" />
+                    app:layout_constraintTop_toBottomOf="@id/text_player_score_2" />
 
                 <Button
                     android:id="@+id/btn_foul_2"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
                     android:text="Foul"
-                    app:layout_constraintTop_toBottomOf="@id/text_player_score_2"
+                    app:flow_horizontalAlign="center"
                     app:layout_constraintLeft_toRightOf="@id/btn_score_2"
                     app:layout_constraintRight_toLeftOf="@id/btn_scratch_2"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginEnd="8dp" />
+                    app:layout_constraintTop_toBottomOf="@id/text_player_score_2" />
 
                 <Button
                     android:id="@+id/btn_scratch_2"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
                     android:text="Scratch"
-                    app:layout_constraintTop_toBottomOf="@id/text_player_score_2"
+                    app:flow_horizontalAlign="center"
                     app:layout_constraintLeft_toRightOf="@id/btn_foul_2"
                     app:layout_constraintRight_toRightOf="@id/btn_undo_2"
-                    android:layout_marginTop="8dp" />
+                    app:layout_constraintTop_toBottomOf="@id/text_player_score_2" />
 
                 <Button
                     android:id="@+id/btn_undo_2"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
                     android:text="Undo"
-                    app:layout_constraintTop_toBottomOf="@id/text_player_score_2"
+                    app:flow_horizontalAlign="center"
                     app:layout_constraintLeft_toRightOf="@id/btn_scratch_2"
                     app:layout_constraintRight_toRightOf="parent"
-                    android:layout_marginTop="8dp" />
+                    app:layout_constraintTop_toBottomOf="@id/text_player_score_2" />
 
                 <TextView
                     android:id="@+id/text_player_history_2"
@@ -234,17 +342,38 @@
                     app:layout_constraintRight_toRightOf="parent"
                     android:layout_marginTop="8dp" />
 
-                <!-- Scored History Container for Player 2 -->
-                <LinearLayout
-                    android:id="@+id/linear_scored_history_2"
-                    android:layout_width="match_parent"
+                <!-- Scored history images wrapped in a horizontal scroll -->
+                <HorizontalScrollView
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
+                    android:scrollbars="none"
+                    android:fillViewport="false"
+                    android:overScrollMode="never"
                     app:layout_constraintTop_toBottomOf="@id/btn_scratch_2"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintRight_toRightOf="parent"
-                    android:layout_marginTop="4dp"/>
+                    android:layout_marginTop="4dp">
+
+                    <LinearLayout
+                        android:id="@+id/linear_scored_history_2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal" />
+                </HorizontalScrollView>
             </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <!-- Aggregate score display for 2-player games -->
+            <TextView
+                android:id="@+id/text_aggregate_score"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Score tied\nAggregate score: 0"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:padding="8dp"
+                android:gravity="center"
+                android:background="#DDDDDD"
+                android:visibility="gone" />
 
             <!-- Player Section 3 -->
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -257,13 +386,56 @@
 
                 <EditText
                     android:id="@+id/edit_player_name_3"
-                    android:layout_width="match_parent"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:hint="Player 3 Name"
                     android:imeOptions="actionDone"
                     android:singleLine="true"
+                    android:maxLength="15"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toLeftOf="@id/text_status_3"
+                    android:layout_marginEnd="8dp" />
+
+                <!-- Lead / Out-of-contention indicator 3 -->
+                <TextView
+                    android:id="@+id/text_status_3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="4dp"
+                    android:paddingRight="4dp"
+                    android:paddingTop="2dp"
+                    android:paddingBottom="2dp"
+                    android:textColor="#000000"
+                    android:visibility="gone"
+                    app:layout_constraintTop_toTopOf="@id/edit_player_name_3"
+                    app:layout_constraintBottom_toBottomOf="@id/edit_player_name_3"
+                    app:layout_constraintLeft_toRightOf="@id/edit_player_name_3"
+                    app:layout_constraintRight_toLeftOf="@id/text_rank_emoji_3"
+                    android:layout_marginEnd="4dp" />
+
+                <!-- Rank Emoji 3 -->
+                <TextView
+                    android:id="@+id/text_rank_emoji_3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text=""
+                    android:textSize="18sp"
+                    app:layout_constraintTop_toTopOf="@id/edit_player_name_3"
+                    app:layout_constraintBottom_toBottomOf="@id/edit_player_name_3"
+                    app:layout_constraintRight_toLeftOf="@id/text_shooter_label_3"
+                    android:layout_marginEnd="4dp" />
+
+                <!-- Shooter Label C -->
+                <TextView
+                    android:id="@+id/text_shooter_label_3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="C"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    app:layout_constraintTop_toTopOf="@id/edit_player_name_3"
+                    app:layout_constraintBottom_toBottomOf="@id/edit_player_name_3"
                     app:layout_constraintRight_toRightOf="parent" />
 
                 <TextView
@@ -276,50 +448,51 @@
                     android:gravity="center"
                     app:layout_constraintTop_toBottomOf="@id/edit_player_name_3"
                     app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintRight_toRightOf="parent"
-                    android:layout_marginTop="8dp" />
+                    app:layout_constraintRight_toRightOf="parent" />
 
                 <Button
                     android:id="@+id/btn_score_3"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
                     android:text="Score"
-                    app:layout_constraintTop_toBottomOf="@id/text_player_score_3"
+                    app:flow_horizontalAlign="center"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintRight_toLeftOf="@id/btn_foul_3"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginEnd="8dp" />
+                    app:layout_constraintTop_toBottomOf="@id/text_player_score_3" />
 
                 <Button
                     android:id="@+id/btn_foul_3"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
                     android:text="Foul"
-                    app:layout_constraintTop_toBottomOf="@id/text_player_score_3"
+                    app:flow_horizontalAlign="center"
                     app:layout_constraintLeft_toRightOf="@id/btn_score_3"
                     app:layout_constraintRight_toLeftOf="@id/btn_scratch_3"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginEnd="8dp" />
+                    app:layout_constraintTop_toBottomOf="@id/text_player_score_3" />
 
                 <Button
                     android:id="@+id/btn_scratch_3"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
                     android:text="Scratch"
-                    app:layout_constraintTop_toBottomOf="@id/text_player_score_3"
+                    app:flow_horizontalAlign="center"
                     app:layout_constraintLeft_toRightOf="@id/btn_foul_3"
                     app:layout_constraintRight_toRightOf="@id/btn_undo_3"
-                    android:layout_marginTop="8dp" />
+                    app:layout_constraintTop_toBottomOf="@id/text_player_score_3" />
 
                 <Button
                     android:id="@+id/btn_undo_3"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
                     android:text="Undo"
-                    app:layout_constraintTop_toBottomOf="@id/text_player_score_3"
+                    app:flow_horizontalAlign="center"
                     app:layout_constraintLeft_toRightOf="@id/btn_scratch_3"
                     app:layout_constraintRight_toRightOf="parent"
-                    android:layout_marginTop="8dp" />
+                    app:layout_constraintTop_toBottomOf="@id/text_player_score_3" />
 
                 <TextView
                     android:id="@+id/text_player_history_3"
@@ -331,16 +504,24 @@
                     app:layout_constraintRight_toRightOf="parent"
                     android:layout_marginTop="8dp" />
 
-                <!-- Scored History Container for Player 3 -->
-                <LinearLayout
-                    android:id="@+id/linear_scored_history_3"
-                    android:layout_width="match_parent"
+                <!-- Scored history images wrapped in a horizontal scroll -->
+                <HorizontalScrollView
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
+                    android:scrollbars="none"
+                    android:fillViewport="false"
+                    android:overScrollMode="never"
                     app:layout_constraintTop_toBottomOf="@id/btn_scratch_3"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintRight_toRightOf="parent"
-                    android:layout_marginTop="4dp"/>
+                    android:layout_marginTop="4dp">
+
+                    <LinearLayout
+                        android:id="@+id/linear_scored_history_3"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal" />
+                </HorizontalScrollView>
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <!-- Player Section 4 -->
@@ -354,13 +535,56 @@
 
                 <EditText
                     android:id="@+id/edit_player_name_4"
-                    android:layout_width="match_parent"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:hint="Player 4 Name"
                     android:imeOptions="actionDone"
                     android:singleLine="true"
+                    android:maxLength="15"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toLeftOf="@id/text_status_4"
+                    android:layout_marginEnd="8dp" />
+
+                <!-- Lead / Out-of-contention indicator 4 -->
+                <TextView
+                    android:id="@+id/text_status_4"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="4dp"
+                    android:paddingRight="4dp"
+                    android:paddingTop="2dp"
+                    android:paddingBottom="2dp"
+                    android:textColor="#000000"
+                    android:visibility="gone"
+                    app:layout_constraintTop_toTopOf="@id/edit_player_name_4"
+                    app:layout_constraintBottom_toBottomOf="@id/edit_player_name_4"
+                    app:layout_constraintLeft_toRightOf="@id/edit_player_name_4"
+                    app:layout_constraintRight_toLeftOf="@id/text_rank_emoji_4"
+                    android:layout_marginEnd="4dp" />
+
+                <!-- Rank Emoji 4 -->
+                <TextView
+                    android:id="@+id/text_rank_emoji_4"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text=""
+                    android:textSize="18sp"
+                    app:layout_constraintTop_toTopOf="@id/edit_player_name_4"
+                    app:layout_constraintBottom_toBottomOf="@id/edit_player_name_4"
+                    app:layout_constraintRight_toLeftOf="@id/text_shooter_label_4"
+                    android:layout_marginEnd="4dp" />
+
+                <!-- Shooter Label D -->
+                <TextView
+                    android:id="@+id/text_shooter_label_4"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="D"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    app:layout_constraintTop_toTopOf="@id/edit_player_name_4"
+                    app:layout_constraintBottom_toBottomOf="@id/edit_player_name_4"
                     app:layout_constraintRight_toRightOf="parent" />
 
                 <TextView
@@ -373,50 +597,51 @@
                     android:gravity="center"
                     app:layout_constraintTop_toBottomOf="@id/edit_player_name_4"
                     app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintRight_toRightOf="parent"
-                    android:layout_marginTop="8dp" />
+                    app:layout_constraintRight_toRightOf="parent" />
 
                 <Button
                     android:id="@+id/btn_score_4"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
                     android:text="Score"
-                    app:layout_constraintTop_toBottomOf="@id/text_player_score_4"
+                    app:flow_horizontalAlign="center"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintRight_toLeftOf="@id/btn_foul_4"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginEnd="8dp" />
+                    app:layout_constraintTop_toBottomOf="@id/text_player_score_4" />
 
                 <Button
                     android:id="@+id/btn_foul_4"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
                     android:text="Foul"
-                    app:layout_constraintTop_toBottomOf="@id/text_player_score_4"
+                    app:flow_horizontalAlign="center"
                     app:layout_constraintLeft_toRightOf="@id/btn_score_4"
                     app:layout_constraintRight_toLeftOf="@id/btn_scratch_4"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginEnd="8dp" />
+                    app:layout_constraintTop_toBottomOf="@id/text_player_score_4" />
 
                 <Button
                     android:id="@+id/btn_scratch_4"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
                     android:text="Scratch"
-                    app:layout_constraintTop_toBottomOf="@id/text_player_score_4"
+                    app:flow_horizontalAlign="center"
                     app:layout_constraintLeft_toRightOf="@id/btn_foul_4"
                     app:layout_constraintRight_toRightOf="@id/btn_undo_4"
-                    android:layout_marginTop="8dp" />
+                    app:layout_constraintTop_toBottomOf="@id/text_player_score_4" />
 
                 <Button
                     android:id="@+id/btn_undo_4"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
                     android:text="Undo"
-                    app:layout_constraintTop_toBottomOf="@id/text_player_score_4"
+                    app:flow_horizontalAlign="center"
                     app:layout_constraintLeft_toRightOf="@id/btn_scratch_4"
                     app:layout_constraintRight_toRightOf="parent"
-                    android:layout_marginTop="8dp" />
+                    app:layout_constraintTop_toBottomOf="@id/text_player_score_4" />
 
                 <TextView
                     android:id="@+id/text_player_history_4"
@@ -427,16 +652,24 @@
                     app:layout_constraintRight_toRightOf="parent"
                     android:layout_marginTop="8dp" />
 
-                <!-- Scored History Container for Player 4 -->
-                <LinearLayout
-                    android:id="@+id/linear_scored_history_4"
-                    android:layout_width="match_parent"
+                <!-- Scored history images wrapped in a horizontal scroll -->
+                <HorizontalScrollView
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
+                    android:scrollbars="none"
+                    android:fillViewport="false"
+                    android:overScrollMode="never"
                     app:layout_constraintTop_toBottomOf="@id/btn_scratch_4"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintRight_toRightOf="parent"
-                    android:layout_marginTop="4dp"/>
+                    android:layout_marginTop="4dp">
+
+                    <LinearLayout
+                        android:id="@+id/linear_scored_history_4"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal" />
+                </HorizontalScrollView>
             </androidx.constraintlayout.widget.ConstraintLayout>
 
         </LinearLayout>
@@ -448,23 +681,24 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="Start a New Game"
-        app:layout_constraintTop_toBottomOf="@id/scroll_player_sections"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toLeftOf="@id/button_restart_game"
         app:layout_constraintBottom_toBottomOf="parent"
-        android:layout_margin="5dp"
-        android:layout_weight="1"/> <!-- Equal width -->
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="4dp"
+        android:layout_marginBottom="8dp" />
 
+    <!-- Restart Game Button -->
     <Button
         android:id="@+id/button_restart_game"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="Restart Current Game"
-        app:layout_constraintTop_toBottomOf="@id/scroll_player_sections"
         app:layout_constraintLeft_toRightOf="@id/button_new_game"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        android:layout_margin="5dp"
-        android:layout_weight="1"/> <!-- Equal width -->
+        android:layout_marginStart="4dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
