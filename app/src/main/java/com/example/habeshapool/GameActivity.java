@@ -1,6 +1,8 @@
 package com.example.habeshapool;
 
 import android.content.Intent;
+import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.KeyEvent;
@@ -23,8 +25,14 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Locale;
 
 public class GameActivity extends AppCompatActivity {
+
+    private static final String PREFS_NAME = "habesha_pool_prefs";
+    private static final String KEY_LANGUAGE = "preferred_language";
+    private static final String LANG_EN = "en";
+    private static final String LANG_AM = "am";
 
     private enum ActionType { NONE, SCORE, FOUL }
     private ActionType pendingAction = ActionType.NONE;
@@ -88,11 +96,19 @@ public class GameActivity extends AppCompatActivity {
     private int leadSecuredIndex = -1;
     private int outOfContentionIndex = -1;
 
+    private String currentLanguage = LANG_EN;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        String lang = getIntent().getStringExtra("language");
+        if (lang == null) lang = "en";
+        applyLocale(lang);
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
+
         ballsSumTextView = findViewById(R.id.text_balls_sum);
+        currentBallsLayout = findViewById(R.id.current_balls_layout);
 
         numPlayers = getIntent().getIntExtra("numPlayers", 2);
 
@@ -104,17 +120,16 @@ public class GameActivity extends AppCompatActivity {
             currentBalls.add(ball);
         }
 
-        currentBallsLayout = findViewById(R.id.current_balls_layout);
         createCurrentBallButtons();
-
-        ballsSumTextView = findViewById(R.id.text_balls_sum);
         updateBallSumUI();
 
         aggregateScoreText = findViewById(R.id.text_aggregate_score);
-        if (numPlayers == 2) {
-            aggregateScoreText.setVisibility(View.VISIBLE);
-        } else {
-            aggregateScoreText.setVisibility(View.GONE);
+        if (aggregateScoreText != null) {
+            if (numPlayers == 2) {
+                aggregateScoreText.setVisibility(View.VISIBLE);
+            } else {
+                aggregateScoreText.setVisibility(View.GONE);
+            }
         }
 
         for (int i = 0; i < 4; i++) {
@@ -137,9 +152,7 @@ public class GameActivity extends AppCompatActivity {
             } else {
                 if (shooterLabels[i] != null) shooterLabels[i].setVisibility(View.VISIBLE);
                 if (rankEmojiTexts[i] != null) rankEmojiTexts[i].setText("");
-                if (statusIndicatorTexts[i] != null) {
-                    statusIndicatorTexts[i].setVisibility(View.GONE);
-                }
+                if (statusIndicatorTexts[i] != null) statusIndicatorTexts[i].setVisibility(View.GONE);
 
                 int editId = getResources().getIdentifier("edit_player_name_" + (i + 1), "id", getPackageName());
                 int scoreTextId = getResources().getIdentifier("text_player_score_" + (i + 1), "id", getPackageName());
@@ -178,7 +191,7 @@ public class GameActivity extends AppCompatActivity {
                 }
 
                 if (playerScoreTexts[i] != null) {
-                    playerScoreTexts[i].setText("Score: 0 (History: )");
+                    playerScoreTexts[i].setText(getString(R.string.score_label_0));
                 }
                 if (playerHistoryTexts[i] != null) {
                     playerHistoryTexts[i].setText("");
@@ -190,33 +203,36 @@ public class GameActivity extends AppCompatActivity {
                 final int playerIndex = i;
 
                 if (scoreButtons[i] != null) {
+                    scoreButtons[i].setText(getString(R.string.btn_score));
                     scoreButtons[i].setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
                             pendingAction = ActionType.SCORE;
                             currentPlayerIndex = playerIndex;
-                            Toast.makeText(GameActivity.this, "Tap a ball to score for Player " + (playerIndex + 1), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(GameActivity.this, getString(R.string.toast_tap_ball_score, playerIndex + 1), Toast.LENGTH_SHORT).show();
                         }
                     });
                 }
 
                 if (foulButtons[i] != null) {
+                    foulButtons[i].setText(getString(R.string.btn_foul));
                     foulButtons[i].setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
                             pendingAction = ActionType.FOUL;
                             currentPlayerIndex = playerIndex;
-                            Toast.makeText(GameActivity.this, "Tap a ball to record a foul for Player " + (playerIndex + 1), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(GameActivity.this, getString(R.string.toast_tap_ball_foul, playerIndex + 1), Toast.LENGTH_SHORT).show();
                         }
                     });
                 }
 
                 if (scratchButtons[i] != null) {
+                    scratchButtons[i].setText(getString(R.string.btn_scratch));
                     scratchButtons[i].setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
                             if (currentBalls.isEmpty()) {
-                                Toast.makeText(GameActivity.this, "No balls remaining.", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(GameActivity.this, getString(R.string.toast_no_balls_remaining), Toast.LENGTH_SHORT).show();
                                 return;
                             }
                             int currentBall = currentBalls.get(0);
@@ -226,13 +242,14 @@ public class GameActivity extends AppCompatActivity {
                             updateRankEmojis();
                             updateAggregateScore();
                             updateEarlyIndicators();
-                            Toast.makeText(GameActivity.this, "Scratch recorded for Player " + (playerIndex + 1), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(GameActivity.this, getString(R.string.toast_scratch_recorded, playerIndex + 1), Toast.LENGTH_SHORT).show();
                             checkEndOfGame();
                         }
                     });
                 }
 
                 if (undoButtons[i] != null) {
+                    undoButtons[i].setText(getString(R.string.btn_undo));
                     undoButtons[i].setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
@@ -245,7 +262,7 @@ public class GameActivity extends AppCompatActivity {
                                 try {
                                     shotValue = Integer.parseInt(shotEntry.trim());
                                 } catch (NumberFormatException e) {
-                                    Toast.makeText(GameActivity.this, "Error undoing shot!", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(GameActivity.this, getString(R.string.toast_error_undo), Toast.LENGTH_SHORT).show();
                                     return;
                                 }
 
@@ -263,7 +280,7 @@ public class GameActivity extends AppCompatActivity {
                                 updateAggregateScore();
                                 updateEarlyIndicators();
                             } else {
-                                Toast.makeText(GameActivity.this, "Nothing to undo!", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(GameActivity.this, getString(R.string.toast_nothing_to_undo), Toast.LENGTH_SHORT).show();
                             }
                         }
                     });
@@ -273,21 +290,19 @@ public class GameActivity extends AppCompatActivity {
 
         newGameButton = findViewById(R.id.button_new_game);
         if (newGameButton != null) {
+            newGameButton.setText(getString(R.string.btn_new_game));
             newGameButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    showConfirmDialog(
-                            "Are you sure you want to start a new game? This will erase all progress.",
-                            new Runnable() {
-                                @Override
-                                public void run() {
-                                    Intent intent = new Intent(GameActivity.this, PlayerSelectionActivity.class);
-                                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                                    startActivity(intent);
-                                    finish();
-                                }
-                            }
-                    );
+                    showConfirmDialog(getString(R.string.confirm_new_game), new Runnable() {
+                        @Override
+                        public void run() {
+                            Intent intent = new Intent(GameActivity.this, PlayerSelectionActivity.class);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                            startActivity(intent);
+                            finish();
+                        }
+                    });
                 }
             });
         }
@@ -309,18 +324,16 @@ public class GameActivity extends AppCompatActivity {
 
         Button restartGameButton = findViewById(R.id.button_restart_game);
         if (restartGameButton != null) {
+            restartGameButton.setText(getString(R.string.btn_restart_game));
             restartGameButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    showConfirmDialog(
-                            "Are you sure you want to restart the current game? This will reset scores and history.",
-                            new Runnable() {
-                                @Override
-                                public void run() {
-                                    handleRestartCurrentGame();
-                                }
-                            }
-                    );
+                    showConfirmDialog(getString(R.string.confirm_restart_game), new Runnable() {
+                        @Override
+                        public void run() {
+                            handleRestartCurrentGame();
+                        }
+                    });
                 }
             });
         }
@@ -328,6 +341,21 @@ public class GameActivity extends AppCompatActivity {
         updateRankEmojis();
         updateAggregateScore();
         updateEarlyIndicators();
+    }
+
+    private void applyLocale(String lang) {
+        if (lang == null) lang = LANG_EN;
+        Locale locale;
+        if (LANG_AM.equals(lang)) {
+            locale = new Locale("am");
+        } else {
+            locale = new Locale("en");
+        }
+        Locale.setDefault(locale);
+        Resources res = getResources();
+        Configuration config = new Configuration(res.getConfiguration());
+        config.setLocale(locale);
+        res.updateConfiguration(config, res.getDisplayMetrics());
     }
 
     private int getCurrentBallSum() {
@@ -340,7 +368,7 @@ public class GameActivity extends AppCompatActivity {
 
     private void updateBallSumUI() {
         if (ballsSumTextView != null) {
-            ballsSumTextView.setText("" + getCurrentBallSum());
+            ballsSumTextView.setText(String.valueOf(getCurrentBallSum()));
         }
     }
 
@@ -385,7 +413,7 @@ public class GameActivity extends AppCompatActivity {
         updateAggregateScore();
         clearEarlyIndicators();
 
-        Toast.makeText(GameActivity.this, "Game restarted! Scores reset.", Toast.LENGTH_SHORT).show();
+        Toast.makeText(GameActivity.this, getString(R.string.toast_game_restarted), Toast.LENGTH_SHORT).show();
     }
 
     private void reorderShootersByLastRanking() {
@@ -416,14 +444,12 @@ public class GameActivity extends AppCompatActivity {
     private void showConfirmDialog(String message, final Runnable onConfirm) {
         new AlertDialog.Builder(this)
                 .setMessage(message)
-                // LEFT button (negative) → shows "Yes"
-                .setNegativeButton("Yes", (dialog, which) -> {
+                .setNegativeButton(getString(R.string.yes), (dialog, which) -> {
                     if (onConfirm != null) {
                         onConfirm.run();
                     }
                 })
-                // RIGHT button (positive) → shows "No"
-                .setPositiveButton("No", null)
+                .setPositiveButton(getString(R.string.no), null)
                 .show();
     }
 
@@ -441,6 +467,7 @@ public class GameActivity extends AppCompatActivity {
     }
 
     private void createCurrentBallButtons() {
+        if (currentBallsLayout == null) return;
         Collections.sort(currentBalls);
         currentBallsLayout.removeAllViews();
         for (final int ball : currentBalls) {
@@ -457,7 +484,7 @@ public class GameActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     if (pendingAction == ActionType.NONE || currentPlayerIndex < 0) {
-                        Toast.makeText(GameActivity.this, "Select an action (Score, Foul, or Scratch) for a player first.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(GameActivity.this, getString(R.string.toast_select_action_first), Toast.LENGTH_SHORT).show();
                         return;
                     }
                     int tappedBall = (int) v.getTag();
@@ -470,17 +497,17 @@ public class GameActivity extends AppCompatActivity {
                         updateRankEmojis();
                         updateAggregateScore();
                         updateEarlyIndicators();
-                        Toast.makeText(GameActivity.this, "Player " + (currentPlayerIndex + 1) + " scored " + pointValue, Toast.LENGTH_SHORT).show();
+                        Toast.makeText(GameActivity.this, getString(R.string.toast_player_scored, currentPlayerIndex + 1, pointValue), Toast.LENGTH_SHORT).show();
                         checkEndOfGame();
                     } else if (pendingAction == ActionType.FOUL) {
-                        int currentBall = currentBalls.get(0);
+                        int currentBall = currentBalls.isEmpty() ? 0 : currentBalls.get(0);
                         int deduction = (currentBall == 3) ? 4 : tappedBall;
                         players.get(currentPlayerIndex).deductScore(deduction);
                         updatePlayerUI(currentPlayerIndex);
                         updateRankEmojis();
                         updateAggregateScore();
                         updateEarlyIndicators();
-                        Toast.makeText(GameActivity.this, "Foul recorded for Player " + (currentPlayerIndex + 1) + " (-" + deduction + ")", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(GameActivity.this, getString(R.string.toast_foul_recorded, currentPlayerIndex + 1, deduction), Toast.LENGTH_SHORT).show();
                     }
                     pendingAction = ActionType.NONE;
                     currentPlayerIndex = -1;
@@ -492,21 +519,32 @@ public class GameActivity extends AppCompatActivity {
     }
 
     private void removeBallButton(View ballButton) {
-        int ballNumber = (int) ballButton.getTag();
-        currentBalls.remove(Integer.valueOf(ballNumber));
-        currentBallsLayout.removeView(ballButton);
+        if (ballButton == null) return;
+        Object tag = ballButton.getTag();
+        if (tag instanceof Integer) {
+            int ballNumber = (Integer) tag;
+            currentBalls.remove(Integer.valueOf(ballNumber));
+        }
+        if (currentBallsLayout != null) {
+            currentBallsLayout.removeView(ballButton);
+        }
         updateBallSumUI();
     }
 
     private void updatePlayerUI(int playerIndex) {
-        String scoreText = "Score: " + players.get(playerIndex).score;
+        if (playerIndex < 0 || playerIndex >= players.size()) return;
+        String scoreText = getString(R.string.score_label_plain, players.get(playerIndex).score);
         String historyText = players.get(playerIndex).history.isEmpty() ? "" : " (" + players.get(playerIndex).history + ")";
-        playerScoreTexts[playerIndex].setText(scoreText + historyText);
+        if (playerScoreTexts[playerIndex] != null) {
+            playerScoreTexts[playerIndex].setText(scoreText + historyText);
+        }
         updatePlayerScoredHistoryUI(playerIndex);
     }
 
     private void updatePlayerScoredHistoryUI(int playerIndex) {
+        if (playerIndex < 0 || playerIndex >= scoredHistoryLayouts.length) return;
         LinearLayout layout = scoredHistoryLayouts[playerIndex];
+        if (layout == null) return;
         layout.removeAllViews();
         for (int ballNumber : players.get(playerIndex).scoredBalls) {
             ImageView iv = new ImageView(this);
@@ -558,50 +596,56 @@ public class GameActivity extends AppCompatActivity {
 
             Player first = sortedPlayers.get(0);
             int firstIndex = players.indexOf(first);
-            String firstName = playerNameEdits[firstIndex].getText().toString().trim();
-            if (firstName.isEmpty()) {
-                firstName = "Player " + (firstIndex + 1);
+            String firstName = "";
+            if (firstIndex >= 0 && playerNameEdits[firstIndex] != null) {
+                firstName = playerNameEdits[firstIndex].getText().toString().trim();
+            }
+            if (firstName == null || firstName.isEmpty()) {
+                firstName = getString(R.string.player_default_name, firstIndex + 1);
             }
 
             String titleMessage;
             if (sortedPlayers.size() > 1 && first.score == sortedPlayers.get(1).score) {
-                titleMessage = "No winner, its a tie!\n\n";
+                titleMessage = getString(R.string.game_over_tie) + "\n\n";
             } else {
-                titleMessage = "Winner: " + firstName + "\n\n";
+                titleMessage = getString(R.string.game_over_winner, firstName) + "\n\n";
             }
 
             StringBuilder resultMessage = new StringBuilder(titleMessage);
             for (int i = 0; i < sortedPlayers.size(); i++) {
                 Player currentPlayer = sortedPlayers.get(i);
                 int originalIndex = players.indexOf(currentPlayer);
-                String playerName = playerNameEdits[originalIndex].getText().toString().trim();
-                if (playerName.isEmpty()) {
-                    playerName = "Player " + (originalIndex + 1);
+                String playerName = "";
+                if (originalIndex >= 0 && playerNameEdits[originalIndex] != null) {
+                    playerName = playerNameEdits[originalIndex].getText().toString().trim();
+                }
+                if (playerName == null || playerName.isEmpty()) {
+                    playerName = getString(R.string.player_default_name, originalIndex + 1);
                 }
                 resultMessage.append((i + 1))
                         .append(". ")
                         .append(playerName)
-                        .append(" - Score: ")
-                        .append(currentPlayer.score)
+                        .append(" - ")
+                        .append(getString(R.string.score_label_plain, currentPlayer.score))
                         .append("\n");
             }
 
             new AlertDialog.Builder(this)
-                    .setTitle("Game Over")
+                    .setTitle(getString(R.string.game_over_title))
                     .setMessage(resultMessage.toString())
-                    .setPositiveButton("OK", null)
+                    .setPositiveButton(getString(R.string.ok), null)
                     .show();
         }
     }
 
     private void hideKeyboard(View view) {
         InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
-        if (imm != null) {
+        if (imm != null && view != null) {
             imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
     }
 
-    // --- NEW: Aggregate score for 2-player games ---
+    // --- Aggregate score for 2-player games ---
     private void updateAggregateScore() {
         if (numPlayers != 2 || aggregateScoreText == null) {
             return;
@@ -611,28 +655,29 @@ public class GameActivity extends AppCompatActivity {
         int score2 = players.get(1).score;
 
         if (score1 == score2) {
-            aggregateScoreText.setText("Score tied\nAggregate score: 0");
+            aggregateScoreText.setText(getString(R.string.aggregate_tied));
             return;
         }
 
         int diff = Math.abs(score1 - score2);
         int leaderIndex = (score1 > score2) ? 0 : 1;
 
-        String name1 = playerNameEdits[0].getText().toString().trim();
-        String name2 = playerNameEdits[1].getText().toString().trim();
+        String name1 = "";
+        String name2 = "";
+        if (playerNameEdits[0] != null) name1 = playerNameEdits[0].getText().toString().trim();
+        if (playerNameEdits[1] != null) name2 = playerNameEdits[1].getText().toString().trim();
 
-        if (name1.isEmpty()) name1 = "Player 1";
-        if (name2.isEmpty()) name2 = "Player 2";
+        if (name1 == null || name1.isEmpty()) name1 = getString(R.string.player_default_name, 1);
+        if (name2 == null || name2.isEmpty()) name2 = getString(R.string.player_default_name, 2);
 
         String leaderName = (leaderIndex == 0) ? name1 : name2;
 
-        String text = leaderName + " in the lead\nAggregate score: " + diff;
+        String text = getString(R.string.aggregate_leader, leaderName, diff);
         aggregateScoreText.setText(text);
     }
 
-    // --- NEW: Rank emojis based on current scores ---
+    // --- Rank emojis based on current scores ---
     private void updateRankEmojis() {
-        // Clear all first
         for (int i = 0; i < numPlayers; i++) {
             if (rankEmojiTexts[i] != null) {
                 rankEmojiTexts[i].setText("");
@@ -646,7 +691,6 @@ public class GameActivity extends AppCompatActivity {
             scores[i] = players.get(i).score;
         }
 
-        // Check full tie → no emojis
         boolean allEqual = true;
         for (int i = 1; i < numPlayers; i++) {
             if (scores[i] != scores[0]) {
@@ -656,12 +700,10 @@ public class GameActivity extends AppCompatActivity {
         }
         if (allEqual) return;
 
-        // Build list of indices sorted by score desc (stable)
         ArrayList<Integer> indices = new ArrayList<>();
         for (int i = 0; i < numPlayers; i++) indices.add(i);
         indices.sort((a, b) -> Integer.compare(scores[b], scores[a]));
 
-        // Determine rank groups (1-based rank) with rank skipping on ties
         int[] rankByIndex = new int[numPlayers];
         int currentRank = 1;
         rankByIndex[indices.get(0)] = currentRank;
@@ -671,10 +713,8 @@ public class GameActivity extends AppCompatActivity {
             int curIdx = indices.get(i);
 
             if (scores[curIdx] == scores[prevIdx]) {
-                // Same score → same rank
                 rankByIndex[curIdx] = currentRank;
             } else {
-                // Count how many players shared the previous score
                 int tieCount = 0;
                 for (int j = i - 1; j >= 0; j--) {
                     if (scores[indices.get(j)] == scores[prevIdx]) {
@@ -683,28 +723,24 @@ public class GameActivity extends AppCompatActivity {
                         break;
                     }
                 }
-                // Skip ranks equal to number of players in that previous tied group
                 currentRank += tieCount;
                 rankByIndex[curIdx] = currentRank;
             }
         }
 
-        // Assign emojis based on final rank numbers
         for (int i = 0; i < numPlayers; i++) {
             int r = rankByIndex[i];
             String emoji;
-
             if (r == 1) emoji = "🥇";
             else if (r == 2) emoji = "🥈";
             else if (r == 3) emoji = "🥉";
             else emoji = "🗑";
 
-            rankEmojiTexts[i].setText(emoji);
+            if (rankEmojiTexts[i] != null) rankEmojiTexts[i].setText(emoji);
         }
     }
 
-    // --- NEW: Early winner / loser indicators ---
-
+    // --- Early winner / loser indicators ---
     private void updateEarlyIndicators() {
         // Only active when 3 balls or less remain
         if (currentBalls.size() > 3 || numPlayers < 2) {
@@ -724,7 +760,7 @@ public class GameActivity extends AppCompatActivity {
         for (int i = 0; i < numPlayers; i++) indices.add(i);
         indices.sort((a, b) -> Integer.compare(scores[b], scores[a]));
 
-        // LEAD SECURED
+        // LEAD SECURED candidate (first vs second)
         int newLeadIndex = -1;
         if (numPlayers >= 2) {
             int leaderIdx = indices.get(0);
@@ -732,16 +768,16 @@ public class GameActivity extends AppCompatActivity {
             int leaderScore = scores[leaderIdx];
             int secondScore = scores[secondIdx];
 
-            // Must be a sole leader
+            // Must be a sole leader (no tie)
             if (leaderScore != secondScore) {
-                int leaderMinusRemaining = leaderScore - remainingSum;
-                if (leaderMinusRemaining > secondScore) {
+                int maxSecond = secondScore + remainingSum;
+                if (maxSecond < leaderScore) {
                     newLeadIndex = leaderIdx;
                 }
             }
         }
 
-        // OUT OF CONTENTION
+        // OUT OF CONTENTION candidate (last vs second-last)
         int newOutIndex = -1;
         if (numPlayers >= 2) {
             int lastIdx = indices.get(numPlayers - 1);
@@ -749,36 +785,41 @@ public class GameActivity extends AppCompatActivity {
             int lastScore = scores[lastIdx];
             int secondLastScore = scores[secondLastIdx];
 
-            // Must be a sole last place
+            // Must be a sole last place (no tie)
             if (lastScore != secondLastScore) {
-                int lastPlusRemaining = lastScore + remainingSum;
-                if (lastPlusRemaining < secondLastScore) {
+                int maxLast = lastScore + remainingSum;
+                if (maxLast < secondLastScore) {
                     newOutIndex = lastIdx;
                 }
             }
         }
 
-        // Apply changes with animations
+        // --- Apply changes with animations using your show/hide helpers ---
 
-        // Lead secured
+        // Lead secured: hide old if changed
         if (leadSecuredIndex != -1 && leadSecuredIndex != newLeadIndex) {
             hideStatusIndicator(leadSecuredIndex);
             leadSecuredIndex = -1;
         }
-        if (newLeadIndex != -1) {
+        // Lead secured: show new
+        if (newLeadIndex != -1 && leadSecuredIndex != newLeadIndex) {
             leadSecuredIndex = newLeadIndex;
             showStatusIndicator(newLeadIndex, true);
         }
 
-        // Out of contention
+        // Out of contention: hide old if changed
         if (outOfContentionIndex != -1 && outOfContentionIndex != newOutIndex) {
             hideStatusIndicator(outOfContentionIndex);
             outOfContentionIndex = -1;
         }
-        if (newOutIndex != -1) {
+        // Out of contention: show new
+        if (newOutIndex != -1 && outOfContentionIndex != newOutIndex) {
             outOfContentionIndex = newOutIndex;
             showStatusIndicator(newOutIndex, false);
         }
+
+        // Edge case: ensure we never show the same indicator on more than one player
+        // (the above logic already enforces single index per indicator)
     }
 
     private void clearEarlyIndicators() {
@@ -797,18 +838,32 @@ public class GameActivity extends AppCompatActivity {
         TextView tv = statusIndicatorTexts[playerIndex];
         if (tv == null) return;
 
+        // Cancel any running animation and ensure clean state
+        tv.clearAnimation();
+        tv.setTranslationX(0);
+
         tv.setTextColor(Color.BLACK);
         if (isLead) {
             tv.setText("Lead Secured 🏆");
             tv.setBackgroundColor(Color.parseColor("#4CAF50")); // green-ish
         } else {
-            tv.setText("Out of contention ❌");
-            tv.setBackgroundColor(Color.parseColor("#F44336")); // red-ish
+            tv.setText("Out of contention ⚰️");
+            tv.setBackgroundColor(Color.parseColor("#DC1704")); // red-ish
         }
 
         if (tv.getVisibility() != View.VISIBLE) {
             tv.setVisibility(View.VISIBLE);
-            tv.startAnimation(createSlideInAnimation());
+            Animation in = createSlideInAnimation();
+            // ensure final state is visible and translation reset
+            in.setAnimationListener(new Animation.AnimationListener() {
+                @Override public void onAnimationStart(Animation animation) { }
+                @Override public void onAnimationEnd(Animation animation) {
+                    tv.clearAnimation();
+                    tv.setTranslationX(0);
+                }
+                @Override public void onAnimationRepeat(Animation animation) { }
+            });
+            tv.startAnimation(in);
         }
     }
 
@@ -818,29 +873,33 @@ public class GameActivity extends AppCompatActivity {
         if (tv == null) return;
         if (tv.getVisibility() != View.VISIBLE) return;
 
+        // Cancel any running animation first
+        tv.clearAnimation();
+
         Animation slideOut = createSlideOutAnimation();
         slideOut.setAnimationListener(new Animation.AnimationListener() {
-            @Override
-            public void onAnimationStart(Animation animation) { }
+            @Override public void onAnimationStart(Animation animation) { }
 
             @Override
             public void onAnimationEnd(Animation animation) {
+                // Reset view state
+                tv.clearAnimation();
                 tv.setVisibility(View.GONE);
                 tv.setText("");
                 tv.setBackgroundColor(Color.TRANSPARENT);
+                tv.setTranslationX(0);
             }
 
-            @Override
-            public void onAnimationRepeat(Animation animation) { }
+            @Override public void onAnimationRepeat(Animation animation) { }
         });
         tv.startAnimation(slideOut);
     }
 
     private Animation createSlideInAnimation() {
-        int distance = dpToPx(80);
+        int distance = dpToPx(80); // adjust if you want a different offset
         TranslateAnimation anim = new TranslateAnimation(-distance, 0, 0, 0);
         anim.setDuration(200);
-        anim.setFillAfter(true);
+        anim.setFillAfter(false); // we reset translation in listener
         return anim;
     }
 
@@ -848,7 +907,7 @@ public class GameActivity extends AppCompatActivity {
         int distance = dpToPx(80);
         TranslateAnimation anim = new TranslateAnimation(0, -distance, 0, 0);
         anim.setDuration(200);
-        anim.setFillAfter(true);
+        anim.setFillAfter(false);
         return anim;
     }
 }

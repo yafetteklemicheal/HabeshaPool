@@ -6,45 +6,105 @@
     android:layout_height="match_parent"
     tools:context=".PlayerSelectionActivity">
 
+    <!-- Title: Welcome -->
     <TextView
         android:id="@+id/title_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="64dp"
-        android:layout_marginBottom="32dp"
-        android:text="Select Number of Players"
+        android:layout_marginTop="48dp"
+        android:text="Welcome to Habesha Pool"
         android:textSize="24sp"
-        app:layout_constraintBottom_toTopOf="@+id/button_two_players"
+        android:textStyle="bold"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintRight_toRightOf="parent" />
 
-    <Button
-        android:id="@+id/button_two_players"
+    <!-- Language prompt -->
+    <TextView
+        android:id="@+id/text_language_prompt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="2 Players"
+        android:layout_marginTop="24dp"
+        android:text="Please select your language"
+        android:textSize="18sp"
+        app:layout_constraintTop_toBottomOf="@id/title_text"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/title_text" />
+        app:layout_constraintRight_toRightOf="parent" />
+
+    <!-- Language buttons: Eng Amh (spread left-right) -->
+    <Button
+        android:id="@+id/button_english"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="8dp"
+        android:text="Eng"
+        app:layout_constraintTop_toBottomOf="@id/text_language_prompt"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/button_amharic"
+        app:layout_constraintHorizontal_chainStyle="spread" />
+
+    <Button
+        android:id="@+id/button_amharic"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="32dp"
+        android:text="Amh"
+        app:layout_constraintTop_toBottomOf="@id/text_language_prompt"
+        app:layout_constraintLeft_toRightOf="@id/button_english"
+        app:layout_constraintRight_toRightOf="parent" />
+
+    <!-- Players prompt -->
+    <TextView
+        android:id="@+id/text_players_prompt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:text="Please select number of players"
+        android:textSize="18sp"
+        app:layout_constraintTop_toBottomOf="@id/button_english"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent" />
+
+    <!-- Player count buttons: 2 3 4 (spread left-right) -->
+    <Button
+        android:id="@+id/button_two_players"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="8dp"
+        android:text="2"
+        app:layout_constraintTop_toBottomOf="@id/text_players_prompt"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/button_three_players"
+        app:layout_constraintHorizontal_chainStyle="spread" />
 
     <Button
         android:id="@+id/button_three_players"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:text="3 Players"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/button_two_players" />
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:text="3"
+        app:layout_constraintTop_toBottomOf="@id/text_players_prompt"
+        app:layout_constraintLeft_toRightOf="@id/button_two_players"
+        app:layout_constraintRight_toLeftOf="@id/button_four_players" />
 
     <Button
         android:id="@+id/button_four_players"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:text="4 Players"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/button_three_players" />
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="32dp"
+        android:text="4"
+        app:layout_constraintTop_toBottomOf="@id/text_players_prompt"
+        app:layout_constraintLeft_toRightOf="@id/button_three_players"
+        app:layout_constraintRight_toRightOf="parent" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

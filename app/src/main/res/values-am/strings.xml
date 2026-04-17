@@ -1,0 +1,61 @@
+<resources>
+    <string name="app_name">Habesha Pool</string>
+
+    <!-- Player selection -->
+    <string name="welcome_title">AMH_PLACEHOLDER_WELCOME</string>
+    <string name="please_select_language">AMH_PLACEHOLDER_SELECT_LANGUAGE</string>
+    <string name="eng_short">Eng</string>
+    <string name="amh_short">Amh</string>
+    <string name="please_select_players">AMH_PLACEHOLDER_SELECT_PLAYERS</string>
+
+    <!-- Game UI -->
+    <string name="header_balls_in_play">AMH_PLACEHOLDER_BALLS_IN_PLAY</string>
+    <string name="score_label">%1$s: %2$d</string>
+    <string name="score_label_0">AMH_PLACEHOLDER_SCORE_0</string>
+    <string name="score_label_plain">AMH_PLACEHOLDER_SCORE: %1$d</string>
+    <string name="history_label">AMH_PLACEHOLDER_HISTORY</string>
+    <string name="hint_player_name">AMH_PLACEHOLDER_PLAYER_NAME</string>
+
+    <!-- Buttons -->
+    <string name="btn_score">AMH_PLACEHOLDER_SCORE</string>
+    <string name="btn_foul">AMH_PLACEHOLDER_FOUL</string>
+    <string name="btn_scratch">AMH_PLACEHOLDER_SCRATCH</string>
+    <string name="btn_undo">AMH_PLACEHOLDER_UNDO</string>
+    <string name="btn_new_game">AMH_PLACEHOLDER_NEW_GAME</string>
+    <string name="btn_restart_game">AMH_PLACEHOLDER_RESTART_GAME</string>
+    <string name="ok">AMH_OK</string>
+    <string name="yes">AMH_YES</string>
+    <string name="no">AMH_NO</string>
+
+    <!-- Toasts -->
+    <string name="toast_tap_ball_score">AMH_PLACEHOLDER_TAP_SCORE %1$d</string>
+    <string name="toast_tap_ball_foul">AMH_PLACEHOLDER_TAP_FOUL %1$d</string>
+    <string name="toast_no_balls_remaining">AMH_PLACEHOLDER_NO_BALLS</string>
+    <string name="toast_scratch_recorded">AMH_PLACEHOLDER_SCRATCH %1$d</string>
+    <string name="toast_error_undo">AMH_PLACEHOLDER_ERROR_UNDO</string>
+    <string name="toast_nothing_to_undo">AMH_PLACEHOLDER_NOTHING_UNDO</string>
+    <string name="toast_select_action_first">AMH_PLACEHOLDER_SELECT_ACTION_FIRST</string>
+    <string name="toast_player_scored">AMH_PLACEHOLDER_PLAYER_SCORED %1$d %2$d</string>
+    <string name="toast_foul_recorded">AMH_PLACEHOLDER_FOUL %1$d %2$d</string>
+    <string name="toast_game_restarted">AMH_PLACEHOLDER_GAME_RESTARTED</string>
+
+    <!-- Confirmations -->
+    <string name="confirm_new_game">AMH_PLACEHOLDER_CONFIRM_NEW_GAME</string>
+    <string name="confirm_restart_game">AMH_PLACEHOLDER_CONFIRM_RESTART_GAME</string>
+
+    <!-- Game Over -->
+    <string name="game_over_title">AMH_PLACEHOLDER_GAME_OVER</string>
+    <string name="game_over_winner">AMH_PLACEHOLDER_WINNER %1$s</string>
+    <string name="game_over_tie">AMH_PLACEHOLDER_TIE</string>
+    <string name="player_default_name">AMH_PLAYER %1$d</string>
+
+    <!-- Aggregate -->
+    <string name="aggregate_default">AMH_PLACEHOLDER_AGGREGATE_DEFAULT</string>
+    <string name="aggregate_tied">AMH_PLACEHOLDER_AGGREGATE_TIED</string>
+    <string name="aggregate_leader">AMH_PLACEHOLDER_LEADER %1$s %2$d</string>
+    <string name="aggregate_leader_short">AMH_PLACEHOLDER_LEADER_SHORT %1$s</string>
+
+    <!-- Early indicators -->
+    <string name="indicator_lead">AMH_PLACEHOLDER_LEAD</string>
+    <string name="indicator_out">AMH_PLACEHOLDER_OUT</string>
+</resources>
