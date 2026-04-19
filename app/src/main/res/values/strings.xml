@@ -1,61 +1,53 @@
 <resources>
-<string name="app_name">Habesha Pool</string>
+    <string name="app_name">Habesha Pool</string>
 
-<!-- Player selection -->
-<string name="welcome_title">Welcome to Habesha Pool</string>
-<string name="please_select_language">Please select your language</string>
-<string name="eng_short">Eng</string>
-<string name="amh_short">Amh</string>
-<string name="please_select_players">Please select number of players</string>
+    <!-- Player selection -->
+    <string name="welcome_title">Welcome to Habesha Pool</string>
+    <string name="please_select_language">Please select your language</string>
+    <string name="eng_short">English</string>
+    <string name="amh_short">አማርኛ</string>
+    <string name="please_select_players">Please select number of players</string>
 
-<!-- Game UI -->
-<string name="header_balls_in_play">Balls Still in Play | Sum:</string>
-<string name="score_label">%1$s: %2$d</string> <!-- not used directly; helper -->
-<string name="score_label_0">Score: 0</string>
-<string name="score_label_plain">Score: %1$d</string>
-<string name="history_label">History:</string>
-<string name="hint_player_name">Player Name</string>
+    <!-- Game UI -->
+    <string name="header_balls_in_play">Balls Still in Play | Sum:</string>
+    <string name="score_label_plain">Score: %1$d</string>
+    <string name="history_label">History:</string>
+    <string name="hint_player_name">Player Name</string>
 
-<!-- Buttons -->
-<string name="btn_score">Score</string>
-<string name="btn_foul">Foul</string>
-<string name="btn_scratch">Scratch</string>
-<string name="btn_undo">Undo</string>
-<string name="btn_new_game">Start a New Game</string>
-<string name="btn_restart_game">Restart Current Game</string>
-<string name="ok">OK</string>
-<string name="yes">Yes</string>
-<string name="no">No</string>
+    <!-- Buttons -->
+    <string name="btn_score">Score</string>
+    <string name="btn_foul">Foul</string>
+    <string name="btn_scratch">Scratch</string>
+    <string name="btn_undo">Undo</string>
+    <string name="btn_new_game">Start a New Game</string>
+    <string name="btn_restart_game">Restart Current Game</string>
+    <string name="ok">OK</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
 
-<!-- Toasts -->
-<string name="toast_tap_ball_score">Tap a ball to score for Player %1$d</string>
-<string name="toast_tap_ball_foul">Tap a ball to record a foul for Player %1$d</string>
-<string name="toast_no_balls_remaining">No balls remaining.</string>
-<string name="toast_scratch_recorded">Scratch recorded for Player %1$d</string>
-<string name="toast_error_undo">Error undoing shot!</string>
-<string name="toast_nothing_to_undo">Nothing to undo!</string>
-<string name="toast_select_action_first">Select an action (Score, Foul, or Scratch) for a player first.</string>
-<string name="toast_player_scored">Player %1$d scored %2$d</string>
-<string name="toast_foul_recorded">Foul recorded for Player %1$d (-%2$d)</string>
-<string name="toast_game_restarted">Game restarted! Scores reset.</string>
+    <!-- Toasts -->
+    <string name="toast_tap_ball_score">Tap a ball to score for %1$s</string>
+    <string name="toast_tap_ball_foul">Tap a ball to foul %1$s</string>
+    <string name="toast_no_balls_remaining">No balls remaining</string>
+    <string name="toast_nothing_to_undo">Nothing to undo</string>
+    <string name="toast_select_action_first">Select an action (Score or Foul) for a player first.</string>
+    <string name="toast_game_restarted">Game restarted. Scores reset</string>
 
-<!-- Confirmations -->
-<string name="confirm_new_game">Are you sure you want to start a new game? This will erase all progress.</string>
-<string name="confirm_restart_game">Are you sure you want to restart the current game? This will reset scores and history.</string>
+    <!-- Confirmations -->
+    <string name="confirm_new_game">Are you sure you want to start a new game? This will erase all progress</string>
+    <string name="confirm_restart_game">Are you sure you want to restart the current game? This will reset scores and history</string>
 
-<!-- Game Over -->
-<string name="game_over_title">Game Over</string>
-<string name="game_over_winner">Winner: %1$s</string>
-<string name="game_over_tie">No winner, it\'s a tie!</string>
-<string name="player_default_name">Player %1$d</string>
+    <!-- Game Over -->
+    <string name="game_over_title">Game Over</string>
+    <string name="game_over_winner">Winner: %1$s</string>
+    <string name="game_over_tie">No winner. It\'s a tie</string>
+    <string name="player_default_name">Player %1$d</string>
 
-<!-- Aggregate -->
-<string name="aggregate_default">Score tied\nAggregate score: 0</string>
-<string name="aggregate_tied">Score tied\nAggregate score: 0</string>
-<string name="aggregate_leader">%1$s in the lead\nAggregate score: %2$d</string>
-<string name="aggregate_leader_short">%1$s in the lead</string>
+    <!-- Aggregate -->
+    <string name="aggregate_tied">Score tied\nAggregate score: 0</string>
+    <string name="aggregate_leader">%1$s in the lead\nAggregate score: %2$d</string>
 
-<!-- Early indicators -->
-<string name="indicator_lead">Lead Secured 🏆</string>
-<string name="indicator_out">Out of Contention ❌</string>
+    <!-- Early indicators -->
+    <string name="indicator_lead">Lead Secured 🏆</string>
+    <string name="indicator_out">Out of Contention ⚰️</string>
 </resources>

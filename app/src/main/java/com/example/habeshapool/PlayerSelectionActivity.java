@@ -1,5 +1,6 @@
 package com.example.habeshapool;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.content.res.Resources;
@@ -53,15 +54,15 @@ public class PlayerSelectionActivity extends AppCompatActivity {
         // Language button listeners (SESSION ONLY)
         englishButton.setOnClickListener(v -> {
             currentLanguage = LANG_EN;
-            applyLocale("en");
-            applyLanguageTexts();
+            Context localized = updateLocaleResources("en");
+            applyLanguageTexts(localized);
             updateLanguageButtonStyles();
         });
 
         amharicButton.setOnClickListener(v -> {
             currentLanguage = LANG_AM;
-            applyLocale("am");
-            applyLanguageTexts();
+            Context localized = updateLocaleResources("am");
+            applyLanguageTexts(localized);
             updateLanguageButtonStyles();
         });
 
@@ -88,8 +89,20 @@ public class PlayerSelectionActivity extends AppCompatActivity {
         fourPlayersButton.setOnClickListener(listener);
 
         // Apply initial UI
-        applyLanguageTexts();
+        applyLanguageTexts(this);
         updateLanguageButtonStyles();
+    }
+
+    private Context updateLocaleResources(String lang) {
+        if (lang == null) lang = LANG_EN;
+        Locale locale = LANG_AM.equals(lang) ? new Locale("am") : new Locale("en");
+        Locale.setDefault(locale);
+
+        Resources res = getResources();
+        Configuration config = new Configuration(res.getConfiguration());
+        config.setLocale(locale);
+
+        return createConfigurationContext(config);
     }
 
     // --- Locale switching (SESSION ONLY, NO SAVING) ---
@@ -106,32 +119,19 @@ public class PlayerSelectionActivity extends AppCompatActivity {
         res.updateConfiguration(config, res.getDisplayMetrics());
     }
 
-    private void applyLanguageTexts() {
-        if (LANG_EN.equals(currentLanguage)) {
-            // English texts
-            titleText.setText("Welcome to Habesha Pool");
-            languagePromptText.setText("Please select your language");
-            playersPromptText.setText("Please select number of players");
+    private void applyLanguageTexts(Context ctx) {
+        if (ctx == null) ctx = this;
 
-            englishButton.setText("Eng");
-            amharicButton.setText("Amh");
+        titleText.setText(ctx.getString(R.string.welcome_title));
+        languagePromptText.setText(ctx.getString(R.string.please_select_language));
+        playersPromptText.setText(ctx.getString(R.string.please_select_players));
 
-            twoPlayersButton.setText("2");
-            threePlayersButton.setText("3");
-            fourPlayersButton.setText("4");
-        } else {
-            // Amharic placeholders (replace later with real translations)
-            titleText.setText("Welcome to Habesha Pool (AMH)");
-            languagePromptText.setText("Please select your language (AMH)");
-            playersPromptText.setText("Please select number of players (AMH)");
+        englishButton.setText(ctx.getString(R.string.eng_short));
+        amharicButton.setText(ctx.getString(R.string.amh_short));
 
-            englishButton.setText("Eng");
-            amharicButton.setText("Amh");
-
-            twoPlayersButton.setText("2");
-            threePlayersButton.setText("3");
-            fourPlayersButton.setText("4");
-        }
+        twoPlayersButton.setText("2");
+        threePlayersButton.setText("3");
+        fourPlayersButton.setText("4");
     }
 
     private void updateLanguageButtonStyles() {

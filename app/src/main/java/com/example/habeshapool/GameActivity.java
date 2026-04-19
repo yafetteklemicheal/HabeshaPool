@@ -52,7 +52,7 @@ public class GameActivity extends AppCompatActivity {
         Player() {
             name = "";
             score = 0;
-            history = "History:";
+            history = getString(R.string.history_label);
         }
 
         void addScore(int value) {
@@ -191,7 +191,9 @@ public class GameActivity extends AppCompatActivity {
                 }
 
                 if (playerScoreTexts[i] != null) {
-                    playerScoreTexts[i].setText(getString(R.string.score_label_0));
+                    String initialScore = getString(R.string.score_label_plain, 0);
+                    String initialHistory = getString(R.string.history_label);
+                    playerScoreTexts[i].setText(initialScore + " (" + initialHistory + ")");
                 }
                 if (playerHistoryTexts[i] != null) {
                     playerHistoryTexts[i].setText("");
@@ -207,9 +209,14 @@ public class GameActivity extends AppCompatActivity {
                     scoreButtons[i].setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
+                            if (currentBalls.isEmpty()) {
+                                Toast.makeText(GameActivity.this, getString(R.string.toast_no_balls_remaining), Toast.LENGTH_SHORT).show();
+                                return;
+                            }
                             pendingAction = ActionType.SCORE;
                             currentPlayerIndex = playerIndex;
-                            Toast.makeText(GameActivity.this, getString(R.string.toast_tap_ball_score, playerIndex + 1), Toast.LENGTH_SHORT).show();
+                            String displayName = getPlayerDisplayName(playerIndex);
+                            Toast.makeText(GameActivity.this, getString(R.string.toast_tap_ball_score, displayName), Toast.LENGTH_SHORT).show();
                         }
                     });
                 }
@@ -219,9 +226,15 @@ public class GameActivity extends AppCompatActivity {
                     foulButtons[i].setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
+                            if (currentBalls.isEmpty()) {
+                                Toast.makeText(GameActivity.this, getString(R.string.toast_no_balls_remaining), Toast.LENGTH_SHORT).show();
+                                return;
+                            }
                             pendingAction = ActionType.FOUL;
                             currentPlayerIndex = playerIndex;
-                            Toast.makeText(GameActivity.this, getString(R.string.toast_tap_ball_foul, playerIndex + 1), Toast.LENGTH_SHORT).show();
+
+                            String displayName = getPlayerDisplayName(playerIndex);
+                            Toast.makeText(GameActivity.this, getString(R.string.toast_tap_ball_foul, displayName), Toast.LENGTH_SHORT).show();
                         }
                     });
                 }
@@ -242,7 +255,6 @@ public class GameActivity extends AppCompatActivity {
                             updateRankEmojis();
                             updateAggregateScore();
                             updateEarlyIndicators();
-                            Toast.makeText(GameActivity.this, getString(R.string.toast_scratch_recorded, playerIndex + 1), Toast.LENGTH_SHORT).show();
                             checkEndOfGame();
                         }
                     });
@@ -262,7 +274,7 @@ public class GameActivity extends AppCompatActivity {
                                 try {
                                     shotValue = Integer.parseInt(shotEntry.trim());
                                 } catch (NumberFormatException e) {
-                                    Toast.makeText(GameActivity.this, getString(R.string.toast_error_undo), Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(GameActivity.this, getString(R.string.toast_nothing_to_undo), Toast.LENGTH_SHORT).show();
                                     return;
                                 }
 
@@ -281,6 +293,7 @@ public class GameActivity extends AppCompatActivity {
                                 updateEarlyIndicators();
                             } else {
                                 Toast.makeText(GameActivity.this, getString(R.string.toast_nothing_to_undo), Toast.LENGTH_SHORT).show();
+                                updateEarlyIndicators(); // ensure indicators recalculate even when undo does nothing
                             }
                         }
                     });
@@ -343,6 +356,17 @@ public class GameActivity extends AppCompatActivity {
         updateEarlyIndicators();
     }
 
+    private String getPlayerDisplayName(int playerIndex) {
+        String displayName = "";
+        if (playerIndex >= 0 && playerIndex < playerNameEdits.length && playerNameEdits[playerIndex] != null) {
+            displayName = playerNameEdits[playerIndex].getText().toString().trim();
+        }
+        if (displayName == null || displayName.isEmpty()) {
+            displayName = getString(R.string.player_default_name, playerIndex + 1);
+        }
+        return displayName;
+    }
+
     private void applyLocale(String lang) {
         if (lang == null) lang = LANG_EN;
         Locale locale;
@@ -356,6 +380,7 @@ public class GameActivity extends AppCompatActivity {
         Configuration config = new Configuration(res.getConfiguration());
         config.setLocale(locale);
         res.updateConfiguration(config, res.getDisplayMetrics());
+        getApplicationContext().createConfigurationContext(config);
     }
 
     private int getCurrentBallSum() {
@@ -497,7 +522,6 @@ public class GameActivity extends AppCompatActivity {
                         updateRankEmojis();
                         updateAggregateScore();
                         updateEarlyIndicators();
-                        Toast.makeText(GameActivity.this, getString(R.string.toast_player_scored, currentPlayerIndex + 1, pointValue), Toast.LENGTH_SHORT).show();
                         checkEndOfGame();
                     } else if (pendingAction == ActionType.FOUL) {
                         int currentBall = currentBalls.isEmpty() ? 0 : currentBalls.get(0);
@@ -507,7 +531,6 @@ public class GameActivity extends AppCompatActivity {
                         updateRankEmojis();
                         updateAggregateScore();
                         updateEarlyIndicators();
-                        Toast.makeText(GameActivity.this, getString(R.string.toast_foul_recorded, currentPlayerIndex + 1, deduction), Toast.LENGTH_SHORT).show();
                     }
                     pendingAction = ActionType.NONE;
                     currentPlayerIndex = -1;
@@ -516,6 +539,7 @@ public class GameActivity extends AppCompatActivity {
             currentBallsLayout.addView(b);
         }
         updateBallSumUI();
+        updateEarlyIndicators(); // ensure indicators recalculate when balls change
     }
 
     private void removeBallButton(View ballButton) {
@@ -817,9 +841,6 @@ public class GameActivity extends AppCompatActivity {
             outOfContentionIndex = newOutIndex;
             showStatusIndicator(newOutIndex, false);
         }
-
-        // Edge case: ensure we never show the same indicator on more than one player
-        // (the above logic already enforces single index per indicator)
     }
 
     private void clearEarlyIndicators() {
@@ -844,11 +865,11 @@ public class GameActivity extends AppCompatActivity {
 
         tv.setTextColor(Color.BLACK);
         if (isLead) {
-            tv.setText("Lead Secured 🏆");
-            tv.setBackgroundColor(Color.parseColor("#4CAF50")); // green-ish
+            tv.setText(getString(R.string.indicator_lead));
+            tv.setBackgroundColor(Color.parseColor("#4CAF50"));
         } else {
-            tv.setText("Out of contention ⚰️");
-            tv.setBackgroundColor(Color.parseColor("#DC1704")); // red-ish
+            tv.setText(getString(R.string.indicator_out));
+            tv.setBackgroundColor(Color.parseColor("#DC1704"));
         }
 
         if (tv.getVisibility() != View.VISIBLE) {
@@ -896,10 +917,10 @@ public class GameActivity extends AppCompatActivity {
     }
 
     private Animation createSlideInAnimation() {
-        int distance = dpToPx(80); // adjust if you want a different offset
+        int distance = dpToPx(80);
         TranslateAnimation anim = new TranslateAnimation(-distance, 0, 0, 0);
         anim.setDuration(200);
-        anim.setFillAfter(false); // we reset translation in listener
+        anim.setFillAfter(false);
         return anim;
     }
 
