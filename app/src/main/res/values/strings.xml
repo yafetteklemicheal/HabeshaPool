@@ -34,8 +34,8 @@
     <string name="toast_game_restarted">Game restarted. Scores reset</string>
 
     <!-- Confirmations -->
-    <string name="confirm_new_game">Are you sure you want to start a new game? This will erase all progress</string>
-    <string name="confirm_restart_game">Are you sure you want to restart the current game? This will reset scores and history</string>
+    <string name="confirm_new_game">This will reset scores and history. Are you sure you want to start a new game?</string>
+    <string name="confirm_restart_game">This will reset scores and history. Are you sure you want to restart the current game?</string>
 
     <!-- Game Over -->
     <string name="game_over_title">Game Over</string>

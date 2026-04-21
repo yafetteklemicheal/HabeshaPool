@@ -3,7 +3,7 @@
 
     <!-- Player selection -->
     <string name="welcome_title">እንኳን ወደ ሐበሻ ፑል በደህና መጡ</string>
-    <string name="please_select_language">እባክዎ ቁንቋ ይምረጡ</string>
+    <string name="please_select_language">እባክዎ ቋንቋዎን ይምረጡ</string>
     <string name="eng_short">English</string>
     <string name="amh_short">አማርኛ</string>
     <string name="please_select_players">እባክዎ የተጫዋቾቹን ቁጥር ይምረጡ</string>

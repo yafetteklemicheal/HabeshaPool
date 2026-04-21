@@ -310,10 +310,7 @@ public class GameActivity extends AppCompatActivity {
                     showConfirmDialog(getString(R.string.confirm_new_game), new Runnable() {
                         @Override
                         public void run() {
-                            Intent intent = new Intent(GameActivity.this, PlayerSelectionActivity.class);
-                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                            startActivity(intent);
-                            finish();
+                            performReturnToPlayerSelection();
                         }
                     });
                 }
@@ -417,7 +414,7 @@ public class GameActivity extends AppCompatActivity {
 
         for (Player player : players) {
             player.score = 0;
-            player.history = "History:";
+            player.history = getString(R.string.history_label);
             player.scoredBalls.clear();
         }
 
@@ -660,6 +657,23 @@ public class GameActivity extends AppCompatActivity {
                     .setPositiveButton(getString(R.string.ok), null)
                     .show();
         }
+    }
+
+    private void performReturnToPlayerSelection() {
+        Intent intent = new Intent(GameActivity.this, PlayerSelectionActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+        finish();
+    }
+
+    @Override
+    public void onBackPressed() {
+        showConfirmDialog(getString(R.string.confirm_new_game), new Runnable() {
+            @Override
+            public void run() {
+                performReturnToPlayerSelection();
+            }
+        });
     }
 
     private void hideKeyboard(View view) {
