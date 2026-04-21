@@ -7,6 +7,7 @@ import android.content.res.Resources;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.GridLayout;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -46,12 +47,42 @@ public class PlayerSelectionActivity extends AppCompatActivity {
 
         englishButton = findViewById(R.id.button_english);
         amharicButton = findViewById(R.id.button_amharic);
-
-        twoPlayersButton = findViewById(R.id.button_two_players);
-        threePlayersButton = findViewById(R.id.button_three_players);
-        fourPlayersButton = findViewById(R.id.button_four_players);
-
-        // Language button listeners (SESSION ONLY)
+        GridLayout playerButtonsContainer = findViewById(R.id.player_buttons_container);
+        int[] drawables = new int[] { R.drawable.pool_ball_2, R.drawable.pool_ball_3, R.drawable.pool_ball_4 };
+        Button[] createdButtons = new Button[3];
+        View.OnClickListener playerClickListener = v -> {
+            Object tag = v.getTag();
+            int numPlayers = 2;
+            if (tag instanceof Integer) {
+                numPlayers = (Integer) tag;
+            } else {
+                try {
+                    numPlayers = Integer.parseInt(String.valueOf(tag));
+                } catch (Exception ignored) {}
+            }
+            Intent intent = new Intent(PlayerSelectionActivity.this, GameActivity.class);
+            intent.putExtra("numPlayers", numPlayers);
+            intent.putExtra("language", currentLanguage);
+            startActivity(intent);
+        };
+        for (int i = 0; i < drawables.length; i++) {
+            Button b = new Button(this);
+            b.setBackgroundResource(drawables[i]);
+            b.setTag(i + 2);
+            b.setText("");
+            GridLayout.LayoutParams params = new GridLayout.LayoutParams();
+            params.width = dpToPx(45);
+            params.height = dpToPx(45);
+            params.setMargins(dpToPx(3), dpToPx(5), dpToPx(5), dpToPx(3));
+            b.setLayoutParams(params);
+            b.setId(View.generateViewId());
+            b.setOnClickListener(playerClickListener);
+            playerButtonsContainer.addView(b);
+            createdButtons[i] = b;
+        }
+        twoPlayersButton = createdButtons[0];
+        threePlayersButton = createdButtons[1];
+        fourPlayersButton = createdButtons[2];
         englishButton.setOnClickListener(v -> {
             currentLanguage = LANG_EN;
             Context localized = updateLocaleResources("en");
@@ -68,14 +99,14 @@ public class PlayerSelectionActivity extends AppCompatActivity {
 
         // Player count buttons
         View.OnClickListener listener = v -> {
-            int numPlayers;
-
-            if (v.getId() == R.id.button_two_players) {
-                numPlayers = 2;
-            } else if (v.getId() == R.id.button_three_players) {
-                numPlayers = 3;
+            Object tag = v.getTag();
+            int numPlayers = 2;
+            if (tag instanceof Integer) {
+                numPlayers = (Integer) tag;
             } else {
-                numPlayers = 4;
+                try {
+                    numPlayers = Integer.parseInt(String.valueOf(tag));
+                } catch (Exception ignored) {}
             }
 
             Intent intent = new Intent(PlayerSelectionActivity.this, GameActivity.class);
@@ -128,10 +159,19 @@ public class PlayerSelectionActivity extends AppCompatActivity {
 
         englishButton.setText(ctx.getString(R.string.eng_short));
         amharicButton.setText(ctx.getString(R.string.amh_short));
-
-        twoPlayersButton.setText("2");
-        threePlayersButton.setText("3");
-        fourPlayersButton.setText("4");
+        Button[] playerButtons = new Button[] { twoPlayersButton, threePlayersButton, fourPlayersButton };
+        int[] drawables = new int[] { R.drawable.pool_ball_2, R.drawable.pool_ball_3, R.drawable.pool_ball_4 };
+        for (int i = 0; i < playerButtons.length; i++) {
+            Button b = playerButtons[i];
+            if (b == null) continue;
+            b.setText("");
+            b.setBackgroundResource(drawables[i]);
+            GridLayout.LayoutParams params = (GridLayout.LayoutParams) b.getLayoutParams();
+            params.width = dpToPx(45);
+            params.height = dpToPx(45);
+            params.setMargins(dpToPx(3), dpToPx(5), dpToPx(5), dpToPx(3));
+            b.setLayoutParams(params);
+        }
     }
 
     private void updateLanguageButtonStyles() {
@@ -142,5 +182,10 @@ public class PlayerSelectionActivity extends AppCompatActivity {
             englishButton.setAlpha(0.5f);
             amharicButton.setAlpha(1.0f);
         }
+    }
+
+    private int dpToPx(int dp) {
+        float density = getResources().getDisplayMetrics().density;
+        return Math.round((float) dp * density);
     }
 }
