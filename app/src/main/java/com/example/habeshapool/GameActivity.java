@@ -232,6 +232,16 @@ public class GameActivity extends AppCompatActivity {
                                 Toast.makeText(GameActivity.this, getString(R.string.toast_no_balls_remaining), Toast.LENGTH_SHORT).show();
                                 return;
                             }
+                            int currentBall = currentBalls.get(0);
+                            if (currentBall == 3) {
+                                players.get(playerIndex).deductScore(4);
+                                updatePlayerUI(playerIndex);
+                                updateRankEmojis();
+                                updateAggregateScore();
+                                updateEarlyIndicators();
+                                checkEndOfGame();
+                                return;
+                            }
                             pendingAction = ActionType.FOUL;
                             currentPlayerIndex = playerIndex;
 
