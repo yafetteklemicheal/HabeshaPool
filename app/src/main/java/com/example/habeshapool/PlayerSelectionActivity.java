@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.GridLayout;
 import android.widget.TextView;
 
+import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.Locale;
@@ -35,6 +36,7 @@ public class PlayerSelectionActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        EdgeToEdge.enable(this);
 
         // ALWAYS default to English locale on app start
         applyLocale("en");
@@ -167,9 +169,9 @@ public class PlayerSelectionActivity extends AppCompatActivity {
             b.setText("");
             b.setBackgroundResource(drawables[i]);
             GridLayout.LayoutParams params = (GridLayout.LayoutParams) b.getLayoutParams();
-            params.width = dpToPx(45);
-            params.height = dpToPx(45);
-            params.setMargins(dpToPx(3), dpToPx(5), dpToPx(5), dpToPx(3));
+            params.width = dpToPx(65);
+            params.height = dpToPx(65);
+            params.setMargins(dpToPx(12), dpToPx(20), dpToPx(20), dpToPx(12));
             b.setLayoutParams(params);
         }
     }

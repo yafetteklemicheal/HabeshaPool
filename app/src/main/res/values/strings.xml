@@ -30,7 +30,7 @@
     <string name="toast_tap_ball_foul">Tap a ball to foul %1$s</string>
     <string name="toast_no_balls_remaining">No balls remaining</string>
     <string name="toast_nothing_to_undo">Nothing to undo</string>
-    <string name="toast_select_action_first">Select an action (Score or Foul) for a player first.</string>
+    <string name="toast_select_action_first">Select an action (Score or Foul) for a player first</string>
     <string name="toast_game_restarted">Game restarted. Scores reset</string>
 
     <!-- Confirmations -->

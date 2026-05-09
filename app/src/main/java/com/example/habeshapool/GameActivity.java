@@ -20,6 +20,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -105,6 +106,7 @@ public class GameActivity extends AppCompatActivity {
         applyLocale(lang);
 
         super.onCreate(savedInstanceState);
+        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_game);
 
         ballsSumTextView = findViewById(R.id.text_balls_sum);
@@ -877,13 +879,13 @@ public class GameActivity extends AppCompatActivity {
         tv.clearAnimation();
         tv.setTranslationX(0);
 
-        tv.setTextColor(Color.BLACK);
+        tv.setTextColor(Color.WHITE);
         if (isLead) {
             tv.setText(getString(R.string.indicator_lead));
-            tv.setBackgroundColor(Color.parseColor("#4CAF50"));
+            tv.setBackgroundColor(Color.parseColor("#05b40d"));
         } else {
             tv.setText(getString(R.string.indicator_out));
-            tv.setBackgroundColor(Color.parseColor("#DC1704"));
+            tv.setBackgroundColor(Color.parseColor("#d90416"));
         }
 
         if (tv.getVisibility() != View.VISIBLE) {

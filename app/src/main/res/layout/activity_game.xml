@@ -6,32 +6,39 @@
     android:id="@+id/game_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/page_background"
     tools:context=".GameActivity">
 
     <!-- Header: Balls Still in Play -->
-    <TextView
-        android:id="@+id/text_balls_in_play_header"
+    <LinearLayout
+        android:id="@+id/balls_header_container"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:padding="6dp"
-        android:text="@string/header_balls_in_play"
-        android:textSize="18sp"
-        android:textStyle="bold"
+        android:orientation="horizontal"
+        android:gravity="center"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:layout_marginTop="40dp">
 
-    <TextView
-        android:id="@+id/text_balls_sum"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="120"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        app:layout_constraintTop_toTopOf="@id/text_balls_in_play_header"
-        app:layout_constraintBottom_toBottomOf="@id/text_balls_in_play_header"
-        app:layout_constraintLeft_toRightOf="@id/text_balls_in_play_header"/>
+        <TextView
+            android:id="@+id/text_balls_in_play_header"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="3dp"
+            android:text="@string/header_balls_in_play"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/text_balls_sum"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="120"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+    </LinearLayout>
 
     <!-- GridLayout for current balls (populated dynamically using images) -->
     <GridLayout
@@ -40,7 +47,7 @@
         android:layout_height="wrap_content"
         android:columnCount="7"
         android:padding="6dp"
-        app:layout_constraintTop_toBottomOf="@id/text_balls_in_play_header"
+        app:layout_constraintTop_toBottomOf="@id/balls_header_container"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         android:layout_marginBottom="6dp" />
@@ -68,7 +75,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="5dp"
-                android:background="#EFEFEF"
+                android:background="@drawable/player_background"
                 android:padding="5dp">
 
                 <!-- Player 1 Name -->
@@ -92,8 +99,8 @@
                     android:layout_height="wrap_content"
                     android:paddingLeft="4dp"
                     android:paddingRight="4dp"
-                    android:paddingTop="2dp"
-                    android:paddingBottom="2dp"
+                    android:paddingTop="4dp"
+                    android:paddingBottom="4dp"
                     android:textColor="#000000"
                     android:visibility="gone"
                     app:layout_constraintTop_toTopOf="@id/edit_player_name_1"
@@ -108,7 +115,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text=""
-                    android:textSize="18sp"
+                    android:textSize="24sp"
                     app:layout_constraintTop_toTopOf="@id/edit_player_name_1"
                     app:layout_constraintBottom_toBottomOf="@id/edit_player_name_1"
                     app:layout_constraintRight_toLeftOf="@id/text_shooter_label_1"
@@ -120,7 +127,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="A"
-                    android:textSize="18sp"
+                    android:textSize="24sp"
                     android:textStyle="bold"
                     app:layout_constraintTop_toTopOf="@id/edit_player_name_1"
                     app:layout_constraintBottom_toBottomOf="@id/edit_player_name_1"
@@ -144,6 +151,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
                     android:text="@string/btn_score"
+                    android:background="@drawable/button_background"
                     app:flow_horizontalAlign="center"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintRight_toLeftOf="@id/btn_foul_1"
@@ -155,6 +163,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
                     android:text="@string/btn_foul"
+                    android:background="@drawable/button_background"
                     app:flow_horizontalAlign="center"
                     app:layout_constraintLeft_toRightOf="@id/btn_score_1"
                     app:layout_constraintRight_toLeftOf="@id/btn_scratch_1"
@@ -166,6 +175,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
                     android:text="@string/btn_scratch"
+                    android:background="@drawable/button_background"
                     app:flow_horizontalAlign="center"
                     app:layout_constraintLeft_toRightOf="@id/btn_foul_1"
                     app:layout_constraintRight_toRightOf="@id/btn_undo_1"
@@ -177,6 +187,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
                     android:text="@string/btn_undo"
+                    android:background="@drawable/button_background"
                     app:flow_horizontalAlign="center"
                     app:layout_constraintLeft_toRightOf="@id/btn_scratch_1"
                     app:layout_constraintRight_toRightOf="parent"
@@ -202,7 +213,9 @@
                     app:layout_constraintTop_toBottomOf="@id/btn_scratch_1"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintRight_toRightOf="parent"
-                    android:layout_marginTop="4dp">
+                    android:layout_marginTop="4dp"
+                    android:layout_marginLeft="4dp"
+                    android:layout_marginRight="4dp">
 
                     <LinearLayout
                         android:id="@+id/linear_scored_history_1"
@@ -218,7 +231,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
-                android:background="#EFEFEF"
+                android:background="@drawable/player_background"
                 android:padding="6dp">
 
                 <EditText
@@ -240,8 +253,8 @@
                     android:layout_height="wrap_content"
                     android:paddingLeft="4dp"
                     android:paddingRight="4dp"
-                    android:paddingTop="2dp"
-                    android:paddingBottom="2dp"
+                    android:paddingTop="4dp"
+                    android:paddingBottom="4dp"
                     android:textColor="#000000"
                     android:visibility="gone"
                     app:layout_constraintTop_toTopOf="@id/edit_player_name_2"
@@ -255,7 +268,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text=""
-                    android:textSize="18sp"
+                    android:textSize="24sp"
                     app:layout_constraintTop_toTopOf="@id/edit_player_name_2"
                     app:layout_constraintBottom_toBottomOf="@id/edit_player_name_2"
                     app:layout_constraintRight_toLeftOf="@id/text_shooter_label_2"
@@ -266,7 +279,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="B"
-                    android:textSize="18sp"
+                    android:textSize="24sp"
                     android:textStyle="bold"
                     app:layout_constraintTop_toTopOf="@id/edit_player_name_2"
                     app:layout_constraintBottom_toBottomOf="@id/edit_player_name_2"
@@ -290,6 +303,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
                     android:text="@string/btn_score"
+                    android:background="@drawable/button_background"
                     app:flow_horizontalAlign="center"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintRight_toLeftOf="@id/btn_foul_2"
@@ -301,6 +315,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
                     android:text="@string/btn_foul"
+                    android:background="@drawable/button_background"
                     app:flow_horizontalAlign="center"
                     app:layout_constraintLeft_toRightOf="@id/btn_score_2"
                     app:layout_constraintRight_toLeftOf="@id/btn_scratch_2"
@@ -312,6 +327,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
                     android:text="@string/btn_scratch"
+                    android:background="@drawable/button_background"
                     app:flow_horizontalAlign="center"
                     app:layout_constraintLeft_toRightOf="@id/btn_foul_2"
                     app:layout_constraintRight_toRightOf="@id/btn_undo_2"
@@ -323,6 +339,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
                     android:text="@string/btn_undo"
+                    android:background="@drawable/button_background"
                     app:flow_horizontalAlign="center"
                     app:layout_constraintLeft_toRightOf="@id/btn_scratch_2"
                     app:layout_constraintRight_toRightOf="parent"
@@ -347,7 +364,9 @@
                     app:layout_constraintTop_toBottomOf="@id/btn_scratch_2"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintRight_toRightOf="parent"
-                    android:layout_marginTop="4dp">
+                    android:layout_marginTop="4dp"
+                    android:layout_marginLeft="4dp"
+                    android:layout_marginRight="4dp">
 
                     <LinearLayout
                         android:id="@+id/linear_scored_history_2"
@@ -367,7 +386,7 @@
                 android:textStyle="bold"
                 android:padding="8dp"
                 android:gravity="center"
-                android:background="#DDDDDD"
+                android:background="@drawable/player_background"
                 android:visibility="gone" />
 
             <!-- Player Section 3 -->
@@ -376,7 +395,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
-                android:background="#EFEFEF"
+                android:background="@drawable/player_background"
                 android:padding="6dp">
 
                 <EditText
@@ -398,8 +417,8 @@
                     android:layout_height="wrap_content"
                     android:paddingLeft="4dp"
                     android:paddingRight="4dp"
-                    android:paddingTop="2dp"
-                    android:paddingBottom="2dp"
+                    android:paddingTop="4dp"
+                    android:paddingBottom="4dp"
                     android:textColor="#000000"
                     android:visibility="gone"
                     app:layout_constraintTop_toTopOf="@id/edit_player_name_3"
@@ -413,7 +432,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text=""
-                    android:textSize="18sp"
+                    android:textSize="24sp"
                     app:layout_constraintTop_toTopOf="@id/edit_player_name_3"
                     app:layout_constraintBottom_toBottomOf="@id/edit_player_name_3"
                     app:layout_constraintRight_toLeftOf="@id/text_shooter_label_3"
@@ -424,7 +443,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="C"
-                    android:textSize="18sp"
+                    android:textSize="24sp"
                     android:textStyle="bold"
                     app:layout_constraintTop_toTopOf="@id/edit_player_name_3"
                     app:layout_constraintBottom_toBottomOf="@id/edit_player_name_3"
@@ -448,6 +467,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
                     android:text="@string/btn_score"
+                    android:background="@drawable/button_background"
                     app:flow_horizontalAlign="center"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintRight_toLeftOf="@id/btn_foul_3"
@@ -459,6 +479,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
                     android:text="@string/btn_foul"
+                    android:background="@drawable/button_background"
                     app:flow_horizontalAlign="center"
                     app:layout_constraintLeft_toRightOf="@id/btn_score_3"
                     app:layout_constraintRight_toLeftOf="@id/btn_scratch_3"
@@ -470,6 +491,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
                     android:text="@string/btn_scratch"
+                    android:background="@drawable/button_background"
                     app:flow_horizontalAlign="center"
                     app:layout_constraintLeft_toRightOf="@id/btn_foul_3"
                     app:layout_constraintRight_toRightOf="@id/btn_undo_3"
@@ -481,6 +503,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
                     android:text="@string/btn_undo"
+                    android:background="@drawable/button_background"
                     app:flow_horizontalAlign="center"
                     app:layout_constraintLeft_toRightOf="@id/btn_scratch_3"
                     app:layout_constraintRight_toRightOf="parent"
@@ -505,7 +528,9 @@
                     app:layout_constraintTop_toBottomOf="@id/btn_scratch_3"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintRight_toRightOf="parent"
-                    android:layout_marginTop="4dp">
+                    android:layout_marginTop="4dp"
+                    android:layout_marginLeft="4dp"
+                    android:layout_marginRight="4dp">
 
                     <LinearLayout
                         android:id="@+id/linear_scored_history_3"
@@ -521,7 +546,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
-                android:background="#EFEFEF"
+                android:background="@drawable/player_background"
                 android:padding="6dp">
 
                 <EditText
@@ -543,8 +568,8 @@
                     android:layout_height="wrap_content"
                     android:paddingLeft="4dp"
                     android:paddingRight="4dp"
-                    android:paddingTop="2dp"
-                    android:paddingBottom="2dp"
+                    android:paddingTop="4dp"
+                    android:paddingBottom="4dp"
                     android:textColor="#000000"
                     android:visibility="gone"
                     app:layout_constraintTop_toTopOf="@id/edit_player_name_4"
@@ -558,7 +583,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text=""
-                    android:textSize="18sp"
+                    android:textSize="24sp"
                     app:layout_constraintTop_toTopOf="@id/edit_player_name_4"
                     app:layout_constraintBottom_toBottomOf="@id/edit_player_name_4"
                     app:layout_constraintRight_toLeftOf="@id/text_shooter_label_4"
@@ -569,7 +594,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="D"
-                    android:textSize="18sp"
+                    android:textSize="24sp"
                     android:textStyle="bold"
                     app:layout_constraintTop_toTopOf="@id/edit_player_name_4"
                     app:layout_constraintBottom_toBottomOf="@id/edit_player_name_4"
@@ -593,6 +618,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
                     android:text="@string/btn_score"
+                    android:background="@drawable/button_background"
                     app:flow_horizontalAlign="center"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintRight_toLeftOf="@id/btn_foul_4"
@@ -604,6 +630,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
                     android:text="@string/btn_foul"
+                    android:background="@drawable/button_background"
                     app:flow_horizontalAlign="center"
                     app:layout_constraintLeft_toRightOf="@id/btn_score_4"
                     app:layout_constraintRight_toLeftOf="@id/btn_scratch_4"
@@ -615,6 +642,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
                     android:text="@string/btn_scratch"
+                    android:background="@drawable/button_background"
                     app:flow_horizontalAlign="center"
                     app:layout_constraintLeft_toRightOf="@id/btn_foul_4"
                     app:layout_constraintRight_toRightOf="@id/btn_undo_4"
@@ -626,6 +654,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
                     android:text="@string/btn_undo"
+                    android:background="@drawable/button_background"
                     app:flow_horizontalAlign="center"
                     app:layout_constraintLeft_toRightOf="@id/btn_scratch_4"
                     app:layout_constraintRight_toRightOf="parent"
@@ -650,7 +679,9 @@
                     app:layout_constraintTop_toBottomOf="@id/btn_scratch_4"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintRight_toRightOf="parent"
-                    android:layout_marginTop="4dp">
+                    android:layout_marginTop="4dp"
+                    android:layout_marginLeft="4dp"
+                    android:layout_marginRight="4dp">
 
                     <LinearLayout
                         android:id="@+id/linear_scored_history_4"
@@ -668,6 +699,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="@string/btn_new_game"
+        android:background="@drawable/button_background"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toLeftOf="@id/button_restart_game"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -678,6 +710,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="@string/btn_restart_game"
+        android:background="@drawable/button_background"
         app:layout_constraintLeft_toRightOf="@id/button_new_game"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
