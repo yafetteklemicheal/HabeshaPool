@@ -12,13 +12,13 @@ public class PlayerSelectionActivityTest {
 
     @Test
     public void classIsPresent() throws Exception {
-        Class<?> cls = Class.forName("com.example.habeshapool.PlayerSelectionActivity");
+        Class<?> cls = Class.forName("com.habeshapool.app.PlayerSelectionActivity");
         assertNotNull(cls);
     }
 
     @Test
     public void languageConstantsExistAndAreStaticFinal() throws Exception {
-        Class<?> cls = Class.forName("com.example.habeshapool.PlayerSelectionActivity");
+        Class<?> cls = Class.forName("com.habeshapool.app.PlayerSelectionActivity");
         Field langEn = cls.getDeclaredField("LANG_EN");
         Field langAm = cls.getDeclaredField("LANG_AM");
         assertTrue(Modifier.isStatic(langEn.getModifiers()));
@@ -33,14 +33,14 @@ public class PlayerSelectionActivityTest {
 
     @Test
     public void currentLanguageFieldExistsAndIsString() throws Exception {
-        Class<?> cls = Class.forName("com.example.habeshapool.PlayerSelectionActivity");
+        Class<?> cls = Class.forName("com.habeshapool.app.PlayerSelectionActivity");
         Field f = cls.getDeclaredField("currentLanguage");
         assertEquals(String.class, f.getType());
     }
 
     @Test
     public void uiTextFieldsDeclared() throws Exception {
-        Class<?> cls = Class.forName("com.example.habeshapool.PlayerSelectionActivity");
+        Class<?> cls = Class.forName("com.habeshapool.app.PlayerSelectionActivity");
         Field titleText = cls.getDeclaredField("titleText");
         Field languagePromptText = cls.getDeclaredField("languagePromptText");
         Field playersPromptText = cls.getDeclaredField("playersPromptText");
@@ -51,7 +51,7 @@ public class PlayerSelectionActivityTest {
 
     @Test
     public void uiButtonFieldsDeclared() throws Exception {
-        Class<?> cls = Class.forName("com.example.habeshapool.PlayerSelectionActivity");
+        Class<?> cls = Class.forName("com.habeshapool.app.PlayerSelectionActivity");
         Field englishButton = cls.getDeclaredField("englishButton");
         Field amharicButton = cls.getDeclaredField("amharicButton");
         Field twoPlayersButton = cls.getDeclaredField("twoPlayersButton");
@@ -66,35 +66,35 @@ public class PlayerSelectionActivityTest {
 
     @Test
     public void updateLocaleResourcesMethodDeclared() throws Exception {
-        Class<?> cls = Class.forName("com.example.habeshapool.PlayerSelectionActivity");
+        Class<?> cls = Class.forName("com.habeshapool.app.PlayerSelectionActivity");
         Method m = cls.getDeclaredMethod("updateLocaleResources", String.class);
         assertEquals("android.content.Context", m.getReturnType().getName());
     }
 
     @Test
     public void applyLocaleMethodDeclared() throws Exception {
-        Class<?> cls = Class.forName("com.example.habeshapool.PlayerSelectionActivity");
+        Class<?> cls = Class.forName("com.habeshapool.app.PlayerSelectionActivity");
         Method m = cls.getDeclaredMethod("applyLocale", String.class);
         assertEquals(void.class, m.getReturnType());
     }
 
     @Test
     public void applyLanguageTextsMethodDeclared() throws Exception {
-        Class<?> cls = Class.forName("com.example.habeshapool.PlayerSelectionActivity");
+        Class<?> cls = Class.forName("com.habeshapool.app.PlayerSelectionActivity");
         Method m = cls.getDeclaredMethod("applyLanguageTexts", android.content.Context.class);
         assertEquals(void.class, m.getReturnType());
     }
 
     @Test
     public void updateLanguageButtonStylesMethodDeclared() throws Exception {
-        Class<?> cls = Class.forName("com.example.habeshapool.PlayerSelectionActivity");
+        Class<?> cls = Class.forName("com.habeshapool.app.PlayerSelectionActivity");
         Method m = cls.getDeclaredMethod("updateLanguageButtonStyles");
         assertEquals(void.class, m.getReturnType());
     }
 
     @Test
     public void onCreateSignatureExists() throws Exception {
-        Class<?> cls = Class.forName("com.example.habeshapool.PlayerSelectionActivity");
+        Class<?> cls = Class.forName("com.habeshapool.app.PlayerSelectionActivity");
         Method m = cls.getDeclaredMethod("onCreate", android.os.Bundle.class);
         assertNotNull(m);
         assertFalse(Modifier.isPublic(m.getModifiers()));
@@ -102,28 +102,28 @@ public class PlayerSelectionActivityTest {
 
     @Test
     public void updateLocaleResourcesHandlesNullParameterSignature() throws Exception {
-        Class<?> cls = Class.forName("com.example.habeshapool.PlayerSelectionActivity");
+        Class<?> cls = Class.forName("com.habeshapool.app.PlayerSelectionActivity");
         Method m = cls.getDeclaredMethod("updateLocaleResources", String.class);
         assertEquals(1, m.getParameterCount());
     }
 
     @Test
     public void applyLanguageTextsAcceptsContextAndIsNonPublic() throws Exception {
-        Class<?> cls = Class.forName("com.example.habeshapool.PlayerSelectionActivity");
+        Class<?> cls = Class.forName("com.habeshapool.app.PlayerSelectionActivity");
         Method m = cls.getDeclaredMethod("applyLanguageTexts", android.content.Context.class);
         assertFalse(Modifier.isPublic(m.getModifiers()));
     }
 
     @Test
     public void updateLanguageButtonStylesIsNonPublicVoid() throws Exception {
-        Class<?> cls = Class.forName("com.example.habeshapool.PlayerSelectionActivity");
+        Class<?> cls = Class.forName("com.habeshapool.app.PlayerSelectionActivity");
         Method m = cls.getDeclaredMethod("updateLanguageButtonStyles");
         assertEquals(void.class, m.getReturnType());
     }
 
     @Test
     public void noPublicFieldsDeclared() throws Exception {
-        Class<?> cls = Class.forName("com.example.habeshapool.PlayerSelectionActivity");
+        Class<?> cls = Class.forName("com.habeshapool.app.PlayerSelectionActivity");
         Field[] fields = cls.getDeclaredFields();
         for (Field f : fields) {
             assertFalse("Field " + f.getName() + " should not be public", Modifier.isPublic(f.getModifiers()));
@@ -132,7 +132,7 @@ public class PlayerSelectionActivityTest {
 
     @Test
     public void englishAndAmharicButtonFieldsAreDistinct() throws Exception {
-        Class<?> cls = Class.forName("com.example.habeshapool.PlayerSelectionActivity");
+        Class<?> cls = Class.forName("com.habeshapool.app.PlayerSelectionActivity");
         Field en = cls.getDeclaredField("englishButton");
         Field am = cls.getDeclaredField("amharicButton");
         assertNotNull(en);
@@ -142,7 +142,7 @@ public class PlayerSelectionActivityTest {
 
     @Test
     public void playerCountButtonsExistAndAreThreeDistinctFields() throws Exception {
-        Class<?> cls = Class.forName("com.example.habeshapool.PlayerSelectionActivity");
+        Class<?> cls = Class.forName("com.habeshapool.app.PlayerSelectionActivity");
         Field two = cls.getDeclaredField("twoPlayersButton");
         Field three = cls.getDeclaredField("threePlayersButton");
         Field four = cls.getDeclaredField("fourPlayersButton");
@@ -155,28 +155,28 @@ public class PlayerSelectionActivityTest {
 
     @Test
     public void applyLanguageTextsSetsPlayerButtonsTextSignature() throws Exception {
-        Class<?> cls = Class.forName("com.example.habeshapool.PlayerSelectionActivity");
+        Class<?> cls = Class.forName("com.habeshapool.app.PlayerSelectionActivity");
         Method m = cls.getDeclaredMethod("applyLanguageTexts", android.content.Context.class);
         assertEquals(1, m.getParameterCount());
     }
 
     @Test
     public void updateLocaleResourcesReturnsContextType() throws Exception {
-        Class<?> cls = Class.forName("com.example.habeshapool.PlayerSelectionActivity");
+        Class<?> cls = Class.forName("com.habeshapool.app.PlayerSelectionActivity");
         Method m = cls.getDeclaredMethod("updateLocaleResources", String.class);
         assertEquals("android.content.Context", m.getReturnType().getName());
     }
 
     @Test
     public void applyLocaleUpdatesConfigurationSignature() throws Exception {
-        Class<?> cls = Class.forName("com.example.habeshapool.PlayerSelectionActivity");
+        Class<?> cls = Class.forName("com.habeshapool.app.PlayerSelectionActivity");
         Method m = cls.getDeclaredMethod("applyLocale", String.class);
         assertEquals(void.class, m.getReturnType());
     }
 
     @Test
     public void classImplementsNoUnexpectedPublicMethods() throws Exception {
-        Class<?> cls = Class.forName("com.example.habeshapool.PlayerSelectionActivity");
+        Class<?> cls = Class.forName("com.habeshapool.app.PlayerSelectionActivity");
         Method[] methods = cls.getDeclaredMethods();
         for (Method m : methods) {
             if (m.getName().startsWith("lambda$")) continue;
@@ -186,14 +186,14 @@ public class PlayerSelectionActivityTest {
 
     @Test
     public void updateLanguageButtonStylesUsesCurrentLanguageField() throws Exception {
-        Class<?> cls = Class.forName("com.example.habeshapool.PlayerSelectionActivity");
+        Class<?> cls = Class.forName("com.habeshapool.app.PlayerSelectionActivity");
         Field currentLanguage = cls.getDeclaredField("currentLanguage");
         assertEquals(String.class, currentLanguage.getType());
     }
 
     @Test
     public void applyLanguageTextsUsesResourceStringsSignature() throws Exception {
-        Class<?> cls = Class.forName("com.example.habeshapool.PlayerSelectionActivity");
+        Class<?> cls = Class.forName("com.habeshapool.app.PlayerSelectionActivity");
         Method m = cls.getDeclaredMethod("applyLanguageTexts", android.content.Context.class);
         assertNotNull(m);
     }

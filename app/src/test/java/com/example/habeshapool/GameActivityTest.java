@@ -13,13 +13,13 @@ public class GameActivityTest {
 
     @Test
     public void gameActivityClassIsPresent() throws Exception {
-        Class<?> cls = Class.forName("com.example.habeshapool.GameActivity");
+        Class<?> cls = Class.forName("com.habeshapool.app.GameActivity");
         assertNotNull("GameActivity should be present on the classpath", cls);
     }
 
     @Test
     public void gameActivityDefinesExpectedStringConstants() throws Exception {
-        Class<?> cls = Class.forName("com.example.habeshapool.GameActivity");
+        Class<?> cls = Class.forName("com.habeshapool.app.GameActivity");
         Field prefs = cls.getDeclaredField("PREFS_NAME");
         Field keyLang = cls.getDeclaredField("KEY_LANGUAGE");
         Field langEn = cls.getDeclaredField("LANG_EN");
@@ -43,7 +43,7 @@ public class GameActivityTest {
 
     @Test
     public void actionTypeEnumExistsAndHasExpectedConstants() throws Exception {
-        Class<?> enumClass = Class.forName("com.example.habeshapool.GameActivity$ActionType");
+        Class<?> enumClass = Class.forName("com.habeshapool.app.GameActivity$ActionType");
         assertTrue("ActionType should be an enum", enumClass.isEnum());
 
         Object[] constants = enumClass.getEnumConstants();
@@ -64,35 +64,35 @@ public class GameActivityTest {
 
     @Test
     public void currentBallsFieldExistsAndIsArrayList() throws Exception {
-        Class<?> cls = Class.forName("com.example.habeshapool.GameActivity");
+        Class<?> cls = Class.forName("com.habeshapool.app.GameActivity");
         Field f = cls.getDeclaredField("currentBalls");
         assertEquals("currentBalls should be java.util.ArrayList", ArrayList.class, f.getType());
     }
 
     @Test
     public void playersFieldExistsAndIsArrayList() throws Exception {
-        Class<?> cls = Class.forName("com.example.habeshapool.GameActivity");
+        Class<?> cls = Class.forName("com.habeshapool.app.GameActivity");
         Field f = cls.getDeclaredField("players");
         assertEquals("players should be java.util.ArrayList", ArrayList.class, f.getType());
     }
 
     @Test
     public void lastRankingIndicesFieldExistsAndIsArrayList() throws Exception {
-        Class<?> cls = Class.forName("com.example.habeshapool.GameActivity");
+        Class<?> cls = Class.forName("com.habeshapool.app.GameActivity");
         Field f = cls.getDeclaredField("lastRankingIndices");
         assertEquals("lastRankingIndices should be java.util.ArrayList", ArrayList.class, f.getType());
     }
 
     @Test
     public void aggregateScoreTextFieldExists() throws Exception {
-        Class<?> cls = Class.forName("com.example.habeshapool.GameActivity");
+        Class<?> cls = Class.forName("com.habeshapool.app.GameActivity");
         Field f = cls.getDeclaredField("aggregateScoreText");
         assertNotNull("aggregateScoreText field should exist", f);
     }
 
     @Test
     public void uiArrayFieldsAreDeclaredAndAreArrays() throws Exception {
-        Class<?> cls = Class.forName("com.example.habeshapool.GameActivity");
+        Class<?> cls = Class.forName("com.habeshapool.app.GameActivity");
         String[] arrayFieldNames = new String[] {
                 "playerNameEdits", "playerScoreTexts", "playerHistoryTexts",
                 "scoreButtons", "foulButtons", "scratchButtons", "undoButtons",
@@ -107,7 +107,7 @@ public class GameActivityTest {
 
     @Test
     public void uiArrayComponentTypesAreExpected() throws Exception {
-        Class<?> cls = Class.forName("com.example.habeshapool.GameActivity");
+        Class<?> cls = Class.forName("com.habeshapool.app.GameActivity");
         Field nameEdits = cls.getDeclaredField("playerNameEdits");
         Field scoreTexts = cls.getDeclaredField("playerScoreTexts");
         Field historyTexts = cls.getDeclaredField("playerHistoryTexts");
@@ -125,7 +125,7 @@ public class GameActivityTest {
 
     @Test
     public void nestedPlayerClassExistsAndHasFieldsAndMethods() throws Exception {
-        Class<?> playerClass = Class.forName("com.example.habeshapool.GameActivity$Player");
+        Class<?> playerClass = Class.forName("com.habeshapool.app.GameActivity$Player");
         assertNotNull("Player nested class should exist", playerClass);
 
         Field name = playerClass.getDeclaredField("name");
@@ -146,56 +146,56 @@ public class GameActivityTest {
 
     @Test
     public void getCurrentBallSumDeclaredAndReturnsInt() throws Exception {
-        Class<?> cls = Class.forName("com.example.habeshapool.GameActivity");
+        Class<?> cls = Class.forName("com.habeshapool.app.GameActivity");
         Method m = cls.getDeclaredMethod("getCurrentBallSum");
         assertEquals("getCurrentBallSum should return int", int.class, m.getReturnType());
     }
 
     @Test
     public void createCurrentBallButtonsDeclaredAndReturnsVoid() throws Exception {
-        Class<?> cls = Class.forName("com.example.habeshapool.GameActivity");
+        Class<?> cls = Class.forName("com.habeshapool.app.GameActivity");
         Method m = cls.getDeclaredMethod("createCurrentBallButtons");
         assertEquals("createCurrentBallButtons should return void", void.class, m.getReturnType());
     }
 
     @Test
     public void removeBallButtonDeclaredAndAcceptsView() throws Exception {
-        Class<?> cls = Class.forName("com.example.habeshapool.GameActivity");
+        Class<?> cls = Class.forName("com.habeshapool.app.GameActivity");
         Method m = cls.getDeclaredMethod("removeBallButton", android.view.View.class);
         assertEquals("removeBallButton should return void", void.class, m.getReturnType());
     }
 
     @Test
     public void updatePlayerUIDeclaredAndAcceptsInt() throws Exception {
-        Class<?> cls = Class.forName("com.example.habeshapool.GameActivity");
+        Class<?> cls = Class.forName("com.habeshapool.app.GameActivity");
         Method m = cls.getDeclaredMethod("updatePlayerUI", int.class);
         assertEquals("updatePlayerUI should return void", void.class, m.getReturnType());
     }
 
     @Test
     public void updatePlayerScoredHistoryUIDeclaredAndAcceptsInt() throws Exception {
-        Class<?> cls = Class.forName("com.example.habeshapool.GameActivity");
+        Class<?> cls = Class.forName("com.habeshapool.app.GameActivity");
         Method m = cls.getDeclaredMethod("updatePlayerScoredHistoryUI", int.class);
         assertEquals("updatePlayerScoredHistoryUI should return void", void.class, m.getReturnType());
     }
 
     @Test
     public void dpToPxDeclaredAndReturnsInt() throws Exception {
-        Class<?> cls = Class.forName("com.example.habeshapool.GameActivity");
+        Class<?> cls = Class.forName("com.habeshapool.app.GameActivity");
         Method m = cls.getDeclaredMethod("dpToPx", int.class);
         assertEquals("dpToPx should return int", int.class, m.getReturnType());
     }
 
     @Test
     public void getImageForBallDeclaredAndReturnsInt() throws Exception {
-        Class<?> cls = Class.forName("com.example.habeshapool.GameActivity");
+        Class<?> cls = Class.forName("com.habeshapool.app.GameActivity");
         Method m = cls.getDeclaredMethod("getImageForBall", int.class);
         assertEquals("getImageForBall should return int", int.class, m.getReturnType());
     }
 
     @Test
     public void checkEndOfGameDeclaredAndIsNonPublicVoid() throws Exception {
-        Class<?> cls = Class.forName("com.example.habeshapool.GameActivity");
+        Class<?> cls = Class.forName("com.habeshapool.app.GameActivity");
         Method m = cls.getDeclaredMethod("checkEndOfGame");
         assertEquals("checkEndOfGame should return void", void.class, m.getReturnType());
         assertFalse("checkEndOfGame should not be public", Modifier.isPublic(m.getModifiers()));
@@ -203,56 +203,56 @@ public class GameActivityTest {
 
     @Test
     public void handleRestartCurrentGameDeclaredAndReturnsVoid() throws Exception {
-        Class<?> cls = Class.forName("com.example.habeshapool.GameActivity");
+        Class<?> cls = Class.forName("com.habeshapool.app.GameActivity");
         Method m = cls.getDeclaredMethod("handleRestartCurrentGame");
         assertEquals("handleRestartCurrentGame should return void", void.class, m.getReturnType());
     }
 
     @Test
     public void reorderShootersByLastRankingDeclared() throws Exception {
-        Class<?> cls = Class.forName("com.example.habeshapool.GameActivity");
+        Class<?> cls = Class.forName("com.habeshapool.app.GameActivity");
         Method m = cls.getDeclaredMethod("reorderShootersByLastRanking");
         assertEquals("reorderShootersByLastRanking should return void", void.class, m.getReturnType());
     }
 
     @Test
     public void showConfirmDialogDeclaredWithStringAndRunnable() throws Exception {
-        Class<?> cls = Class.forName("com.example.habeshapool.GameActivity");
+        Class<?> cls = Class.forName("com.habeshapool.app.GameActivity");
         Method m = cls.getDeclaredMethod("showConfirmDialog", String.class, Runnable.class);
         assertEquals("showConfirmDialog should return void", void.class, m.getReturnType());
     }
 
     @Test
     public void clearAllNameFocusAndHideKeyboardDeclared() throws Exception {
-        Class<?> cls = Class.forName("com.example.habeshapool.GameActivity");
+        Class<?> cls = Class.forName("com.habeshapool.app.GameActivity");
         Method m = cls.getDeclaredMethod("clearAllNameFocusAndHideKeyboard");
         assertEquals("clearAllNameFocusAndHideKeyboard should return void", void.class, m.getReturnType());
     }
 
     @Test
     public void updateAggregateScoreDeclaredAndReturnsVoid() throws Exception {
-        Class<?> cls = Class.forName("com.example.habeshapool.GameActivity");
+        Class<?> cls = Class.forName("com.habeshapool.app.GameActivity");
         Method m = cls.getDeclaredMethod("updateAggregateScore");
         assertEquals("updateAggregateScore should return void", void.class, m.getReturnType());
     }
 
     @Test
     public void performReturnToPlayerSelectionDeclared() throws Exception {
-        Class<?> cls = Class.forName("com.example.habeshapool.GameActivity");
+        Class<?> cls = Class.forName("com.habeshapool.app.GameActivity");
         Method m = cls.getDeclaredMethod("performReturnToPlayerSelection");
         assertEquals("performReturnToPlayerSelection should return void", void.class, m.getReturnType());
     }
 
     @Test
     public void onBackPressedOverrideExists() throws Exception {
-        Class<?> cls = Class.forName("com.example.habeshapool.GameActivity");
+        Class<?> cls = Class.forName("com.habeshapool.app.GameActivity");
         Method m = cls.getDeclaredMethod("onBackPressed");
         assertNotNull("onBackPressed should be declared", m);
     }
 
     @Test
     public void noPublicMutableFieldsInGameActivity() throws Exception {
-        Class<?> cls = Class.forName("com.example.habeshapool.GameActivity");
+        Class<?> cls = Class.forName("com.habeshapool.app.GameActivity");
         Field[] fields = cls.getDeclaredFields();
         for (Field f : fields) {
             assertFalse("Field " + f.getName() + " should not be public", Modifier.isPublic(f.getModifiers()));

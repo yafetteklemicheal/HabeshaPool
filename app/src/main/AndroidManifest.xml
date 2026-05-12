@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest package="com.example.habeshapool"
+<manifest package="com.habeshapool.app"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <application
@@ -9,10 +9,10 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.Light.NoActionBar">
 
-        <activity android:name=".GameActivity" />
-        <activity android:name=".PlayerSelectionActivity" />
+        <activity android:name="com.habeshapool.app.GameActivity" />
+        <activity android:name="com.habeshapool.app.PlayerSelectionActivity" />
         <activity
-            android:name=".SplashActivity"
+            android:name="com.habeshapool.app.SplashActivity"
             android:exported="true"
             android:theme="@style/SplashTheme">
             <intent-filter>

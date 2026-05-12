@@ -1,4 +1,4 @@
-package com.example.habeshapool;
+package com.habeshapool.app;
 
 import android.content.Intent;
 import android.os.Bundle;
