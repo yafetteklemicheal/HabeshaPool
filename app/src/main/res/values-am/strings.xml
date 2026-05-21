@@ -32,6 +32,7 @@
     <string name="toast_nothing_to_undo">የሚመለስ ነገር የለም</string>
     <string name="toast_select_action_first">በቅድምያ ተጫዋቹ ኳስ መክተት ወይም መቀጣቱን ይምረጡ</string>
     <string name="toast_game_restarted">ጨዋታው ከአዲስ ጀምሯል። ውጤቶች ወደ 0 ተመልሰዋል</string>
+    <string name="toast_duplicate_name">ይህ ስም በሌላ ተጫዋች ተይዧል። ድጋሚ ይሞክሩ</string>
 
     <!-- Confirmations -->
     <string name="confirm_new_game">ከአዲስ መጀመር ውጤቶችን ወደ 0 ይመልሳል። አዲስ ጨዋታ መጀመር እንደሚፈልጉ እርግጠኛ ኖት፧</string>

@@ -190,6 +190,16 @@ public class GameActivity extends AppCompatActivity {
                             return false;
                         }
                     });
+                    int finalI = i;
+                    nameField.setOnFocusChangeListener((v, hasFocus) -> {
+                        if (!hasFocus) {
+                            String newName = nameField.getText().toString().trim();
+                            if (!newName.isEmpty() && isDuplicateName(newName, finalI)) {
+                                Toast.makeText(GameActivity.this, getString(R.string.toast_duplicate_name), Toast.LENGTH_SHORT).show();
+                                nameField.setText("");
+                            }
+                        }
+                    });
                 }
 
                 if (playerScoreTexts[i] != null) {
@@ -363,6 +373,20 @@ public class GameActivity extends AppCompatActivity {
         updateRankEmojis();
         updateAggregateScore();
         updateEarlyIndicators();
+    }
+
+    private boolean isDuplicateName(String name, int currentIndex) {
+        if (name == null || name.trim().isEmpty()) return false; // empty names allowed
+        name = name.trim();
+
+        for (int i = 0; i < numPlayers; i++) {
+            if (i == currentIndex) continue;
+            String other = playerNameEdits[i].getText().toString().trim();
+            if (!other.isEmpty() && other.equalsIgnoreCase(name)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private String getPlayerDisplayName(int playerIndex) {
